@@ -40,6 +40,11 @@ COPY scripts/ ./scripts
 COPY llvm-passes/ ./llvm-passes
 RUN mkdir results
 
+WORKDIR /app/dataset/
+RUN    mkdir bin \
+    && mkdir perturbed \
+    && mkidr instrumented
+
 
 WORKDIR /app/llvm-passes/
 # Create build directory and go to it
