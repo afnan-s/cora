@@ -1,0 +1,36 @@
+cp -p $CINC/misc/dna_mathews1999.hex	misc/
+if($status) exit $status
+cp -p $CINC/misc/dna_mathews2004.hex	misc/
+if($status) exit $status
+cp -p $CINC/misc/rna_andronescu2007.hex	misc/
+if($status) exit $status
+cp -p $CINC/misc/rna_langdon2018.hex	misc/
+if($status) exit $status
+cp -p $CINC/misc/rna_misc_special_hairpins.hex	misc/
+if($status) exit $status
+cp -p $CINC/misc/rna_turner1999.hex	misc/
+if($status) exit $status
+cp -p $CINC/misc/rna_turner2004.hex	misc/
+if($status) exit $status
+cp -p $CINC/postscript/aln_macro_base.hex	postscript/
+if($status) exit $status
+cp -p $CINC/postscript/dot_plot_macro_base.hex	postscript/
+if($status) exit $status
+cp -p $CINC/postscript/dot_plot_macro_linear_data.hex	postscript/
+if($status) exit $status
+cp -p $CINC/postscript/dot_plot_macro_sc_motifs.hex	postscript/
+if($status) exit $status
+cp -p $CINC/postscript/dot_plot_macro_sd.hex	postscript/
+if($status) exit $status
+cp -p $CINC/postscript/dot_plot_macro_turn.hex	postscript/
+if($status) exit $status
+cp -p $CINC/postscript/dot_plot_macro_ud.hex	postscript/
+if($status) exit $status
+cp -p $CINC/postscript/structure_plot_macro_base.hex	postscript/
+if($status) exit $status
+cp -p $CINC/postscript/structure_plot_macro_extras.hex	postscript/
+if($status) exit $status
+cp -p $CINC/svg/structure_plot_footer.hex	svg/
+if($status) exit $status
+cp -p $CINC/svg/structure_plot_header.hex	svg/
+if($status) exit $status
