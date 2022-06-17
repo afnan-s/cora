@@ -271,13 +271,3 @@ if __name__ == "__main__":
 
 	print("\r[Done] Calculating entropies.")
 	print("Final entropy saved in "+results_path+"/entropies.csv")
-
-
-
-
-
-
-	
-
-
-

@@ -215,5 +215,3 @@ if __name__ == "__main__":
 		results.close()
 
 	print("\nFile: "+results_path+"/robustness.csv updated successfully.")
-
-
