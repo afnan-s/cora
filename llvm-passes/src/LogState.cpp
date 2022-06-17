@@ -1,21 +1,21 @@
 //==============================================================================
 // FILE:
-//    logState.cpp
+//    LogState.cpp
 //
 // DESCRIPTION:
 //
 // USAGE:
 //    1. Legacy pass manager:
-//      $ opt -load <BUILD_DIR>/libPerState.dylib
-//        -legacy-log-state -S <bitcode-file> -o log-state-out.ll --enable-new-pm=0
+//      $ opt -load <BUILD_DIR>/libPerState.[dylib | so]
+//        -legacy-log-state -S <bitcode-file> -o out.ll --enable-new-pm=0
 
 //    2. New pass maanger:
 //      $ opt -load-pass-plugin <BUILD_DIR>/libPerState.dylib
 //        -passes=-"log-state" <bitcode-file>
 //      The command line option is not available for the new PM
 
-//    3. Link with random generator code:
-//      llvm-link log-state-out.ll hashPrint.ll -S -o instrumented.ll
+//    3. Link with external state output code:
+//      llvm-link out.ll hashPrint.ll -S -o instrumented.ll
 //
 //  
 //
@@ -33,7 +33,6 @@
 #include "llvm/IR/Constants.h"
 #include "llvm/Support/raw_ostream.h"
 #include "llvm/Support/Debug.h"
-// #include <boost/log/trivial.hpp>
 #include "llvm/IR/ValueSymbolTable.h"
 #include "llvm/IR/Instructions.h"
 #include <llvm/Support/raw_ostream.h>

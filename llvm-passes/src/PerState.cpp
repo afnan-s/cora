@@ -3,19 +3,22 @@
 //    PerState.cpp
 //
 // DESCRIPTION:
+//    A pass that randomly picks a store instruction, perturbs the value
+//    being stored.
 //
 // USAGE:
 //    1. Legacy pass manager:
-//      $ opt -load <BUILD_DIR>/libPerState.dylib
-//        -legacy-per-state -S <bitcode-file> -o per-rand-out.ll --enable-new-pm=0
+//      $ opt -load <BUILD_DIR>/libPerState.[dylib | so]
+//        -legacy-per-state -S <bitcode-file> -o out.ll --enable-new-pm=0
 
 //    2. New pass maanger:
 //      $ opt -load-pass-plugin <BUILD_DIR>/libPerState.dylib
 //        -passes=-"per-state" <bitcode-file>
 //      The command line option is not available for the new PM
 
-//    3. Link with random generator code:
-//      llvm-link per-state-out.ll randomBitSeq.ll -S -o instrumented.ll
+//    3. Link with random generator code (can be either randomBitSeq.ll
+//    or randomBitFlip.ll):
+//      llvm-link out.ll randomBitSeq.ll -S -o instrumented.ll
 //
 //  
 //
@@ -33,23 +36,12 @@
 #include "llvm/IR/Constants.h"
 #include "llvm/Support/raw_ostream.h"
 #include "llvm/Support/Debug.h"
-// #include <boost/log/trivial.hpp>
 #include "llvm/IR/ValueSymbolTable.h"
 #include "llvm/IR/Instructions.h"
 #include "llvm/IR/LLVMContext.h"
-
 #include <list>
-
-
 #include <random>
 
-
-// namespace logging = boost::log;
-// namespace sinks = boost::log::sinks;
-// namespace src = boost::log::sources;
-// namespace expr = boost::log::expressions;
-// namespace attrs = boost::log::attributes;
-// namespace keywords = boost::log::keywords;
 
 using namespace llvm;
 
