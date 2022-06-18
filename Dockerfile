@@ -43,7 +43,7 @@ RUN mkdir results
 WORKDIR /app/dataset/
 RUN    mkdir bin \
     && mkdir perturbed \
-    && mkidr instrumented
+    && mkdir instrumented
 
 
 WORKDIR /app/llvm-passes/
