@@ -96,79 +96,86 @@ if __name__ == "__main__":
 	out_frequencies = {}
 
 	for in_file_name in os.listdir(in_dir):
-		if in_file_name.endswith(".in"): 	
-			print("Now running RNAfold over file "+ in_file_name+"\n")	
-			start = time.time()	
-			# test = f.read()
-			# print("\r[    ] Running Tests. Running test input "+test, end='')
-			# print("Instrumeted file path: "+ instrumented_file)
-			# RNAfold does not accept a full path for the output file
-			# out_file_name = os.path.join(in_dir,  in_file_name.split(".")[-2]+".out")
-			out_file_name = in_file_name.split(".")[-2]+".out"
-			p = subprocess.Popen(['lli', instrumented_file, '--noPS', os.path.join(in_dir, in_file_name), '--outfile='+out_file_name], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
-			out = p.communicate()
-			date_time = datetime.datetime.now().strftime('%b-%d-%I%M%p-%S-%f')
-			results_out_file_name = in_file_name.split('.')[0]+"_"+date_time
-			if os.path.exists(out_file_name):
-				print("Finished running lli over file: "+in_file_name+". Output file size: "+str(os.path.getsize(out_file_name))+" bytes.\n")
-				shutil.copyfile(out_file_name, os.path.join(results_path,  results_out_file_name+"_out"))
-				shutil.move(out_file_name, os.path.join(in_dir,out_file_name))
-			else:
-				print("Error: "+out_file_name+" File does not exist.\n")
-			# print(p)
-			# out = p.communicate(input=(test+"\n").encode(encoding='UTF-8'))[0].decode("utf-8")
-			# out = p.communicate(input=(str(test)+"\n").encode(encoding='UTF-8'))[0]
-			# print("out: ")
-			# out = p.communicate()[0].decode("utf-8")
-			# print(out)
-			
-			
-			# Check that instrumentation output and run output both exist
-			if  os.path.exists('output.txt') and os.path.exists(os.path.join(results_path,  results_out_file_name+"_out")):
-				print("Instrumentation output size:"+str(os.path.getsize('output.txt')/1024/1024/1024)+" GB.\n")
-				with open('output.txt', 'r') as f:
-					lines = f.read().strip().splitlines()
-					# out_line = lines[-1]
-					# if out_line == "":
-					# 	out_line = lines[-2]
-					with open(os.path.join(results_path, results_out_file_name+"_out")) as o:
-						out_line = o.read().strip()
-						# print("out line: "+out_line)
-
-					for line in lines:
-						if line == "" or line == out_line:
-							continue
-
-						store_num = line.split(',')[0] 
-
-						if store_num == "" :
-							continue
-
-						if store_num not in program_state_frequencies:
-							program_state_frequencies[store_num] = {}
-
-						program_state_frequencies[store_num][line] = program_state_frequencies[store_num].get(line, 0) + 1
-
-						if store_num not in out_frequencies:
-							out_frequencies[store_num] = {}
-
-						out_frequencies[store_num][out_line] = out_frequencies[store_num].get(out_line, 0) + 1
+		if in_file_name.endswith(".in"):
+			try: 	
+				print("Now running RNAfold over file "+ in_file_name+"\n")	
+				start = time.time()	
+				# test = f.read()
+				# print("\r[    ] Running Tests. Running test input "+test, end='')
+				# print("Instrumeted file path: "+ instrumented_file)
+				# RNAfold does not accept a full path for the output file
+				# out_file_name = os.path.join(in_dir,  in_file_name.split(".")[-2]+".out")
+				out_file_name = in_file_name.split(".")[-2]+".out"
+				p = subprocess.Popen(['lli', instrumented_file, '--noPS', os.path.join(in_dir, in_file_name), '--outfile='+out_file_name], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+				out = p.communicate()
+				date_time = datetime.datetime.now().strftime('%b-%d-%I%M%p-%S-%f')
+				results_out_file_name = in_file_name.split('.')[0]+"_"+date_time
+				if os.path.exists(out_file_name):
+					print("Finished running lli over file: "+in_file_name+". Output file size: "+str(os.path.getsize(out_file_name))+" bytes.\n")
+					shutil.copyfile(out_file_name, os.path.join(results_path,  results_out_file_name+"_out"))
+					shutil.move(out_file_name, os.path.join(in_dir,out_file_name))
+				else:
+					print("Error: "+out_file_name+" File does not exist.\n")
+				# print(p)
+				# out = p.communicate(input=(test+"\n").encode(encoding='UTF-8'))[0].decode("utf-8")
+				# out = p.communicate(input=(str(test)+"\n").encode(encoding='UTF-8'))[0]
+				# print("out: ")
+				# out = p.communicate()[0].decode("utf-8")
+				# print(out)
 				
-				# TESTING: comment the next two line in order to keep the raw instrumentation output:
-				# Deleting them here in order to save space:
-				# Forgoing this step as it consumes too much disk space:
-				# shutil.move('output.txt', os.path.join(results_path,  results_out_file_name))
-				os.remove('output.txt')
-				os.remove(os.path.join(results_path, results_out_file_name+'_out'))
+				
+				# Check that instrumentation output and run output both exist
+				if  os.path.exists('output.txt') and os.path.exists(os.path.join(results_path,  results_out_file_name+"_out")):
+					print("Instrumentation output size:"+str(os.path.getsize('output.txt')/1024/1024/1024)+" GB.\n")
+					with open('output.txt', 'r') as f:
+						lines = f.read().strip().splitlines()
+						# out_line = lines[-1]
+						# if out_line == "":
+						# 	out_line = lines[-2]
+						with open(os.path.join(results_path, results_out_file_name+"_out")) as o:
+							out_line = o.read().strip()
+							# print("out line: "+out_line)
+
+						for line in lines:
+							if line == "" or line == out_line:
+								continue
+
+							store_num = line.split(',')[0] 
+
+							if store_num == "" :
+								continue
+
+							if store_num not in program_state_frequencies:
+								program_state_frequencies[store_num] = {}
+
+							program_state_frequencies[store_num][line] = program_state_frequencies[store_num].get(line, 0) + 1
+
+							if store_num not in out_frequencies:
+								out_frequencies[store_num] = {}
+
+							out_frequencies[store_num][out_line] = out_frequencies[store_num].get(out_line, 0) + 1
+					
+					# TESTING: comment the next two line in order to keep the raw instrumentation output:
+					# Deleting them here in order to save space:
+					# Forgoing this step as it consumes too much disk space:
+					# shutil.move('output.txt', os.path.join(results_path,  results_out_file_name))
+					os.remove('output.txt')
+					os.remove(os.path.join(results_path, results_out_file_name+'_out'))
 
 
-			else:
-				print("Error: 'output.txt' (raw instrumentation output file) or '"+os.path.join(results_path,  results_out_file_name+"_out")+"'  was not found!\n")
+				else:
+					print("Error: 'output.txt' (raw instrumentation output file) or '"+os.path.join(results_path,  results_out_file_name+"_out")+"'  was not found!\n")
 
-			csv_rows.append([date_time, project_name, in_file_name, out_file_name])
-			end = time.time()
-			elapsed = end - start
-			print("Done. Time taken: "+str(elapsed/60)+" minutes.\n")
+				csv_rows.append([date_time, project_name, in_file_name, out_file_name])
+				end = time.time()
+				elapsed = end - start
+				print("Done. Time taken: "+str(elapsed/60)+" minutes.\n")
+			except OSError as oserr:
+				print("An OSError Occured!")
+				print(oserr)
+			except MemoryError as merror:
+				print("A MemoryError Occured!")
+				print(merror)
 
 	end_all = time.time()
 	elapsed_all = end_all - start_all
