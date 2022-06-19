@@ -118,12 +118,7 @@ if __name__ == "__main__":
 				out = p.communicate()
 				date_time = datetime.datetime.now().strftime('%b-%d-%I%M%p-%S-%f')
 				results_out_file_name = in_file_name.split('.')[0]+"_"+date_time
-				if os.path.exists(out_file_name):
-					print("Finished running lli over file: "+in_file_name+". Output file size: "+str(os.path.getsize(out_file_name))+" bytes.\n")
-					shutil.copyfile(out_file_name, os.path.join(results_path,  results_out_file_name+"_out"))
-					shutil.move(out_file_name, os.path.join(in_dir,out_file_name))
-				else:
-					print("Error: "+out_file_name+" File does not exist.\n")
+
 				# print(p)
 				# out = p.communicate(input=(test+"\n").encode(encoding='UTF-8'))[0].decode("utf-8")
 				# out = p.communicate(input=(str(test)+"\n").encode(encoding='UTF-8'))[0]
@@ -133,12 +128,17 @@ if __name__ == "__main__":
 				
 				
 				# Check that instrumentation output and run output both exist
-				if  os.path.exists('output.txt') and os.path.exists(os.path.join(results_path,  results_out_file_name+"_out")):
+				if  os.path.exists('output.txt') and os.path.exists(out_file_name):
+					print("Finished running lli over file: "+in_file_name+". Output file size: "+str(os.path.getsize(out_file_name))+" bytes.\n")
+
 					if os.path.getsize('output.txt') > max_state_output:
 						print("Oops, instrumentation output file exceeds"+str(max_state_output)+" bytes, skipping input "+in_file_name)
 						os.remove('output.txt')
-						os.remove(os.path.join(results_path, results_out_file_name+'_out'))
+						os.remove(out_file_name)
 						continue
+					
+					shutil.copyfile(out_file_name, os.path.join(results_path,  results_out_file_name+"_out"))
+					shutil.move(out_file_name, os.path.join(in_dir,out_file_name))
 
 					print("Instrumentation output size:"+str(os.path.getsize('output.txt')/1024/1024/1024)+" GB.\n")
 					with open('output.txt', 'r') as f:
@@ -179,7 +179,14 @@ if __name__ == "__main__":
 
 
 				else:
-					print("Error: 'output.txt' (raw instrumentation output file) or '"+os.path.join(results_path,  results_out_file_name+"_out")+"'  was not found!\n")
+					print("Error: 'output.txt' (raw instrumentation output file) or '"+out_file_name+"'  was not found!\n")
+					if os.path.exists('output.txt'):
+						os.remove('output.txt')
+					if os.path.exists(os.path.join(results_path, results_out_file_name+'_out')):
+						os.remove(os.path.join(results_path, results_out_file_name+'_out'))
+					if os.path.exists(os.path.join(in_dir,out_file_name)):
+						os.remove(os.path.join(in_dir,out_file_name))
+					continue
 
 				csv_rows.append([date_time, project_name, in_file_name, out_file_name])
 				end = time.time()
@@ -193,6 +200,10 @@ if __name__ == "__main__":
 					os.remove('output.txt')
 				if os.path.exists(os.path.join(results_path, results_out_file_name+'_out')):
 					os.remove(os.path.join(results_path, results_out_file_name+'_out'))
+				if os.path.exists(os.path.join(in_dir,out_file_name)):
+					os.remove(os.path.join(in_dir,out_file_name))
+				if os.path.exists(out_file_name):
+					os.remove(out_file_name)
 				break
 			except MemoryError as merror:
 				print("A MemoryError Occured!")
@@ -201,6 +212,10 @@ if __name__ == "__main__":
 					os.remove('output.txt')
 				if os.path.exists(os.path.join(results_path, results_out_file_name+'_out')):
 					os.remove(os.path.join(results_path, results_out_file_name+'_out'))
+				if os.path.exists(os.path.join(in_dir,out_file_name)):
+					os.remove(os.path.join(in_dir,out_file_name))
+				if os.path.exists(out_file_name):
+					os.remove(out_file_name)
 				break
 
 	end_all = time.time()
