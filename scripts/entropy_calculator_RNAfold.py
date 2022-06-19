@@ -18,6 +18,9 @@ import time
 lib_extension = "so"
 # lib_extension = "dylib"
 
+# Maximum state instrumentation output size: (in Bytes)
+max_state_output = 10 * 1024 * 1024 * 1024  # 10 GB
+
 if __name__ == "__main__":
 
 	# Parameter Checks
@@ -95,12 +98,15 @@ if __name__ == "__main__":
 	# A dictionary storing for each store # the outputs it produces
 	out_frequencies = {}
 
+	# A counter to count # of inputs not skipped:
+	successful_inputs = 0
+
 	for in_file_name in os.listdir(in_dir):
 		if in_file_name.endswith(".in"):
 			try: 	
 				print("Now running RNAfold over file "+ in_file_name+"\n")
-				print("Current size of program_state_frequencies: "+str(sys.getsizeof(program_state_frequencies))+" bytes.")	
-				print("Current size of out_frequencies: "+str(sys.getsizeof(out_frequencies))+" bytes.")	
+				# print("Current size of program_state_frequencies: "+str(sys.getsizeof(program_state_frequencies))+" bytes.")	
+				# print("Current size of out_frequencies: "+str(sys.getsizeof(out_frequencies))+" bytes.")	
 				start = time.time()	
 				# test = f.read()
 				# print("\r[    ] Running Tests. Running test input "+test, end='')
@@ -128,6 +134,12 @@ if __name__ == "__main__":
 				
 				# Check that instrumentation output and run output both exist
 				if  os.path.exists('output.txt') and os.path.exists(os.path.join(results_path,  results_out_file_name+"_out")):
+					if os.path.getsize('output.txt') > max_state_output:
+						print("Oops, instrumentation output file exceeds"+str(max_state_output)+" bytes, skipping input "+in_file_name)
+						os.remove('output.txt')
+						os.remove(os.path.join(results_path, results_out_file_name+'_out'))
+						continue
+
 					print("Instrumentation output size:"+str(os.path.getsize('output.txt')/1024/1024/1024)+" GB.\n")
 					with open('output.txt', 'r') as f:
 						lines = f.read().strip().splitlines()
@@ -163,6 +175,7 @@ if __name__ == "__main__":
 					# shutil.move('output.txt', os.path.join(results_path,  results_out_file_name))
 					os.remove('output.txt')
 					os.remove(os.path.join(results_path, results_out_file_name+'_out'))
+					successful_inputs += 1
 
 
 				else:
@@ -172,6 +185,7 @@ if __name__ == "__main__":
 				end = time.time()
 				elapsed = end - start
 				print("Done. Time taken: "+str(elapsed/60)+" minutes.\n")
+
 			except OSError as oserr:
 				print("An OSError Occured!")
 				print(oserr)
@@ -196,7 +210,7 @@ if __name__ == "__main__":
 	# json.dump(program_state_frequencies, open(os.path.join(results_path,"program_state_frequencies.json"), 'w'))
 	# json.dump(out_frequencies, open(os.path.join(results_path,"out_frequencies.json"), 'w'))
 
-	print("\r[Done] Running Tests and calculating entropies Overall time taken: "+ str(elapsed_all/60)+" minutes. ")
+	print("\r[Done] Running Tests and calculating entropies.\nSuccessful inputs: "+str(successful_inputs)+".\nOverall time taken: "+ str(elapsed_all/60)+" minutes. ")
 
 	# Check if runs log already exists
 	first_time = True

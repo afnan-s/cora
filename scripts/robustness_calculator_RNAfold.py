@@ -149,7 +149,11 @@ if __name__ == "__main__":
 				# RNAfold does not accept a full path for the output file
 				perturbed_out_file_name = os.path.splitext(in_file_name)[0]+"_perturbed.out"
 
+				# Check a correct output was generated for this particular input
+				# (i.e. if this input generates a state instrumentation output file > set limit, it would have been skipped)
 
+				if not os.path.exists(correct_out_file_name):
+					continue
 
 				for j in range(runs):
 					p = subprocess.Popen(['lli', os.path.join(perturbed_path, variant_file_name), '--noPS', os.path.join(in_dir,in_file_name), '--outfile='+perturbed_out_file_name ], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
