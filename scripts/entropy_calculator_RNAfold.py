@@ -98,7 +98,9 @@ if __name__ == "__main__":
 	for in_file_name in os.listdir(in_dir):
 		if in_file_name.endswith(".in"):
 			try: 	
-				print("Now running RNAfold over file "+ in_file_name+"\n")	
+				print("Now running RNAfold over file "+ in_file_name+"\n")
+				print("Current size of program_state_frequencies: "+str(sys.getsizeof(program_state_frequencies))+" bytes.")	
+				print("Current size of out_frequencies: "+str(sys.getsizeof(out_frequencies))+" bytes.")	
 				start = time.time()	
 				# test = f.read()
 				# print("\r[    ] Running Tests. Running test input "+test, end='')
@@ -173,9 +175,17 @@ if __name__ == "__main__":
 			except OSError as oserr:
 				print("An OSError Occured!")
 				print(oserr)
+				if os.path.exists('output.txt'):
+					os.remove('output.txt')
+				if os.path.exists(os.path.join(results_path, results_out_file_name+'_out')):
+					os.remove(os.path.join(results_path, results_out_file_name+'_out'))
 			except MemoryError as merror:
 				print("A MemoryError Occured!")
 				print(merror)
+				if os.path.exists('output.txt'):
+					os.remove('output.txt')
+				if os.path.exists(os.path.join(results_path, results_out_file_name+'_out')):
+					os.remove(os.path.join(results_path, results_out_file_name+'_out'))
 
 	end_all = time.time()
 	elapsed_all = end_all - start_all
