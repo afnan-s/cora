@@ -179,6 +179,7 @@ if __name__ == "__main__":
 					os.remove('output.txt')
 				if os.path.exists(os.path.join(results_path, results_out_file_name+'_out')):
 					os.remove(os.path.join(results_path, results_out_file_name+'_out'))
+				break
 			except MemoryError as merror:
 				print("A MemoryError Occured!")
 				print(merror)
@@ -186,6 +187,7 @@ if __name__ == "__main__":
 					os.remove('output.txt')
 				if os.path.exists(os.path.join(results_path, results_out_file_name+'_out')):
 					os.remove(os.path.join(results_path, results_out_file_name+'_out'))
+				break
 
 	end_all = time.time()
 	elapsed_all = end_all - start_all
