@@ -199,11 +199,11 @@ if __name__ == "__main__":
 				print(te)
 				if os.path.exists('output.txt'):
 					os.remove('output.txt')
-				if os.path.exists(os.path.join(results_path, results_out_file_name+'_out')):
+				if 'results_out_file_name' in locals() and os.path.exists(os.path.join(results_path, results_out_file_name+'_out')):
 					os.remove(os.path.join(results_path, results_out_file_name+'_out'))
-				if os.path.exists(os.path.join(in_dir,out_file_name)):
+				if 'out_file_name' in locals() and os.path.exists(os.path.join(in_dir,out_file_name)):
 					os.remove(os.path.join(in_dir,out_file_name))
-				if os.path.exists(out_file_name):
+				if 'out_file_name' in locals() and os.path.exists(out_file_name):
 					os.remove(out_file_name)
 				continue
 			except OSError as oserr:
@@ -211,11 +211,11 @@ if __name__ == "__main__":
 				print(oserr)
 				if os.path.exists('output.txt'):
 					os.remove('output.txt')
-				if os.path.exists(os.path.join(results_path, results_out_file_name+'_out')):
+				if 'results_out_file_name' in locals() and os.path.exists(os.path.join(results_path, results_out_file_name+'_out')):
 					os.remove(os.path.join(results_path, results_out_file_name+'_out'))
-				if os.path.exists(os.path.join(in_dir,out_file_name)):
+				if 'out_file_name' in locals() and os.path.exists(os.path.join(in_dir,out_file_name)):
 					os.remove(os.path.join(in_dir,out_file_name))
-				if os.path.exists(out_file_name):
+				if 'out_file_name' in locals() and os.path.exists(out_file_name):
 					os.remove(out_file_name)
 				break
 			except MemoryError as merror:
@@ -223,11 +223,11 @@ if __name__ == "__main__":
 				print(merror)
 				if os.path.exists('output.txt'):
 					os.remove('output.txt')
-				if os.path.exists(os.path.join(results_path, results_out_file_name+'_out')):
+				if 'results_out_file_name' in locals() and os.path.exists(os.path.join(results_path, results_out_file_name+'_out')):
 					os.remove(os.path.join(results_path, results_out_file_name+'_out'))
-				if os.path.exists(os.path.join(in_dir,out_file_name)):
+				if 'out_file_name' in locals() and os.path.exists(os.path.join(in_dir,out_file_name)):
 					os.remove(os.path.join(in_dir,out_file_name))
-				if os.path.exists(out_file_name):
+				if 'out_file_name' in locals() and os.path.exists(out_file_name):
 					os.remove(out_file_name)
 				break
 
