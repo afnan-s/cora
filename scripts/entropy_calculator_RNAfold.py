@@ -194,7 +194,7 @@ if __name__ == "__main__":
 				elapsed = end - start
 				print("Done. Time taken: "+str(elapsed/60)+" minutes.\n")
 
-			except TimeoutExpired as te:
+			except subprocess.TimeoutExpired as te:
 				print("lli timed out over input: "+in_file_name)
 				print(te)
 				if os.path.exists('output.txt'):
