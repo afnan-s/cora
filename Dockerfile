@@ -71,7 +71,9 @@ RUN ./RNAfold_link.bat
 WORKDIR /app/
 RUN ./scripts/generate_lls.sh
 
-RUN ./scripts/conductor.sh; 
+# RUN ./scripts/conductor.sh; 
+RUN     python3 scripts/entropy_calculator_RNAfold.py dataset/bin/RNAfold/RNAfold.ll dataset/src/RNAfold/tests/uniform \
+    &&  python3 scripts/robustness_calculator_RNAfold.py dataset/bin/RNAfold/RNAfold.ll dataset/src/RNAfold/tests/uniform 
 
 # For testing:
 CMD tail -f /dev/null

@@ -115,7 +115,8 @@ if __name__ == "__main__":
 				# out_file_name = os.path.join(in_dir,  in_file_name.split(".")[-2]+".out")
 				out_file_name = in_file_name.split(".")[-2]+".out"
 				p = subprocess.Popen(['lli', instrumented_file, '--noPS', os.path.join(in_dir, in_file_name), '--outfile='+out_file_name], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
-				out = p.communicate()
+				# Set timeout to one hour
+				out = p.communicate(timeout=1*60*60)
 				date_time = datetime.datetime.now().strftime('%b-%d-%I%M%p-%S-%f')
 				results_out_file_name = in_file_name.split('.')[0]+"_"+date_time
 
@@ -193,6 +194,18 @@ if __name__ == "__main__":
 				elapsed = end - start
 				print("Done. Time taken: "+str(elapsed/60)+" minutes.\n")
 
+			except TimeoutExpired as te:
+				print("lli timed out over input: "+in_file_name)
+				print(te)
+				if os.path.exists('output.txt'):
+					os.remove('output.txt')
+				if os.path.exists(os.path.join(results_path, results_out_file_name+'_out')):
+					os.remove(os.path.join(results_path, results_out_file_name+'_out'))
+				if os.path.exists(os.path.join(in_dir,out_file_name)):
+					os.remove(os.path.join(in_dir,out_file_name))
+				if os.path.exists(out_file_name):
+					os.remove(out_file_name)
+				continue
 			except OSError as oserr:
 				print("An OSError Occured!")
 				print(oserr)
