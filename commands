@@ -1,0 +1,3 @@
+# cd to root (where this file is)
+
+docker build -t rna_new -f dataset/RNAfold/Dockerfile .
