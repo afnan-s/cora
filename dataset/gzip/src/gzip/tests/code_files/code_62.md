@@ -1,3 +1,0 @@
-# Laravel Socialite
-
-Coming Soon.
