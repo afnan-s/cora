@@ -1,0 +1,3 @@
+In numerical mathematics, the constant strain triangle element, also known as the CST element or T3 element, is a type of element used in finite element analysis which is used to provide an approximate solution in a 2D domain to the exact solution of a given differential equation.
+The name of this element reflects how the partial derivatives of this element's shape function are linear functions.  When applied to plane stress and plane strain problems, this means that the approximate solution obtained for the stress and strain fields are constant throughout the element's domain.
+The element provides an approximation for the exact solution of a partial differential equation which is parametrized barycentric coordinate system (mathematics)

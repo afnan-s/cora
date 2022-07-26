@@ -102,7 +102,7 @@ if __name__ == "__main__":
 	# A counter to count # of inputs not skipped:
 	successful_inputs = 0
 
-	for in_file_name in os.listdir(in_dir):
+	for in_file_name in sorted(os.listdir(in_dir)):
 		if in_file_name.endswith(".in"):
 			try: 	
 				print("Now running RNAfold over file "+ in_file_name+"\n")
@@ -148,8 +148,8 @@ if __name__ == "__main__":
 						# out_line = lines[-1]
 						# if out_line == "":
 						# 	out_line = lines[-2]
-						with open(os.path.join(results_path, results_out_file_name+"_out")) as o:
-							out_line = o.read().strip()
+						with open(os.path.join(results_path, results_out_file_name+"_out"), 'rb') as o:
+							out_line = o.read()#.strip()
 							# print("out line: "+out_line)
 
 						for line in lines:

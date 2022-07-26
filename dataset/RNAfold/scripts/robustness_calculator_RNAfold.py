@@ -6,6 +6,7 @@ import shutil
 import csv
 import json
 import math
+from itertools import zip_longest
 
 # script is called with 2 arugments: 
 # 1 is the location of the ll file under test
@@ -29,6 +30,16 @@ experiment_setup = "{'num_runs': "+str(runs)+", 'mode': "+mode+", "
 
 lib_extension = "so"
 # lib_extension = "dylib"
+
+def compare_binaries(path1, path2):
+    with open(path1, 'rb') as f1, open(path2, 'rb') as f2:
+        for line1, line2 in zip_longest(f1, f2, fillvalue=None):
+            if line1 == line2:
+                continue
+            else:
+                return False
+        return True
+
 
 if __name__ == "__main__":
 
@@ -143,7 +154,7 @@ if __name__ == "__main__":
 
 		# Loop through .in files in inputs folder:
 
-		for in_file_name in os.listdir(in_dir):
+		for in_file_name in sorted(os.listdir(in_dir)):
 
 			if in_file_name.endswith(".in"):
 
@@ -185,18 +196,26 @@ if __name__ == "__main__":
 					if j == 0:
 						input_causing_execution += 1
 					# Check whether the disruption propagated (by comparing outputs)
-					with open(correct_out_file_name, 'r') as co:
-						with open(perturbed_out_file_name, 'r') as po:
-							correct_output = co.read().encode(encoding='UTF-8')
-							perturbed_output = po.read().encode(encoding='UTF-8')
-							# if perturbed_output.strip() == correct_output.strip():
-							if str(perturbed_output).strip() == str(correct_output).strip():
-								fdp += 1
-							else:
-								dp += 1
+					# with open(correct_out_file_name, 'r') as co:
+					# 	with open(perturbed_out_file_name, 'r') as po:
+					# 		correct_output = co.read().encode(encoding='UTF-8')
+					# 		perturbed_output = po.read().encode(encoding='UTF-8')
+					# 		# if perturbed_output.strip() == correct_output.strip():
+					# 		if str(perturbed_output).strip() == str(correct_output).strip():
+					# 			fdp += 1
+					# 		else:
+					# 			dp += 1
 
-							total_variant_runs += 1
-							total_runs += 1
+					# 		total_variant_runs += 1
+					# 		total_runs += 1
+					if compare_binaries(correct_out_file_name, perturbed_out_file_name):
+						fdp += 1
+					else:
+						dp += 1
+
+					total_variant_runs += 1
+					total_runs += 1
+					os.remove(perturbed_out_file_name)
 		# Done loop through inputs for current variant. Record results:
 		fdp_proportion = 0
 
