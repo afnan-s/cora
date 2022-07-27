@@ -2,8 +2,9 @@ import random
 import string
 import os
 
-sample_size = 500
-path = "../random_strings"
+sample_size = 2000
+# path = "../random_strings"
+path = "../uniform"
 min_length = 5
 max_length = 500
 

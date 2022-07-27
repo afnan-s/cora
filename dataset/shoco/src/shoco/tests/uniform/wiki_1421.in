@@ -1,0 +1,4 @@
+The Parallel High Performance Preconditioners (hypre) is a library of routines for scalable (parallel) solution of linear systems. The built-in BLOPEX package in addition allows solving eigenvalue problems. The main strength of Hypre is availability of high performance parallel multigrid preconditioners for both structured and unstructured grid problems, see (Falgout et al., 2005, 2006).
+Currently, Hypre supports only real double-precision arithmetic. Hypre uses the Message Passing Interface  (MPI) standard for all message-passing communication.  PETSc has an interface to call Hypre preconditioners.
+Hypre is being developed and is supported by members of the Scalable Linear Solvers project within the Lawrence Livermore National Laboratory.
+

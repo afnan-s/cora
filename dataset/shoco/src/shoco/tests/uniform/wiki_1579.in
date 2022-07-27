@@ -1,0 +1,10 @@
+In applied probability theory, the Simon model is a class of stochastic models that results in a power-law distribution function.  It was proposed by Herbert A. Simon to account for the wide range of empirical distributions following a power-law. It models the dynamics of a system of elements with associated counters (e.g., words and their frequencies in texts, or nodes in a network and their connectivity 
+  
+    
+      
+        k
+      
+    
+    {\displaystyle k}
+  ). In this model the dynamics of the system is based on constant growth via addition of new elements (new instances of words) as well as incrementing the counters (new occurrences of a word) at a rate proportional to their current values.
+

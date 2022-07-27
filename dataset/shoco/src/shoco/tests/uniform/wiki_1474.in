@@ -1,0 +1,5 @@
+A weak evolutionarily stable strategy (WESS) is a more broad form of evolutionarily stable strategy (ESS). Like ESS, a WESS is able to defend against an invading "mutant" strategy. This means the WESS cannot be entirely eliminated from the population.
+The definition of WESS is similar to ESS. Any strategy s is a weakly evolutionarily stable strategy (WESS) if for any strategy s*≠s:
+(i) u(s, s) > u(s*, s) or
+(ii) u(s, s) = u(s*, s) and u(s, s*) ≥ u(s*, s*).
+One example of WESS, in a prisoner's dilemma, is Tit-for-tat (a strategy that cooperates in the first interaction and then reciprocates the other player's action from the previous turn in all other iterations).

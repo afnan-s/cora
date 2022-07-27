@@ -1,0 +1,2 @@
+OCRFeeder is an optical character recognition suite for GNOME, which also supports virtually any command-line OCR engine, such as CuneiForm, GOCR, Ocrad and Tesseract. It converts paper documents to digital document files and can serve to make them accessible to visually impaired users.
+OCRFeeder is free and open-source software subject to the terms of the GNU General Public License (GPL) version 3 or later. It is available for Linux and other Unix-like operating systems.

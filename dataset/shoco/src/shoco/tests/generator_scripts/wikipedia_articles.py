@@ -3,8 +3,9 @@ import os
 
 
 if __name__ == "__main__":
-	number_of_files = 500
-	path = "../wikipedia_summaries/"
+	number_of_files = 2000
+	# path = "../wikipedia_summaries/"
+	path = "../uniform"
 	if not os.path.isdir(path):
 		os.makedirs(path)
 	prefix = 'wiki_'
