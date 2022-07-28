@@ -24,7 +24,7 @@ variants = 50
 runs = 1
 
 # Perturbation mode ('bit': random bit flip. 'Seq': random bit sequence)
-mode = "seq"
+mode = "bit"
 
 # After how many trials should the script give up trying to generate unique variants
 giveup = 100
