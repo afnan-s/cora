@@ -1,6 +1,18 @@
 # This script assumes results/entropies.csv and results/robustness.csv have already been generated:
 
-setwd("~/cora/results/RNAfold")
+setwd("")
+# Set the working directory of the 'results' folder. Where the structure:
+
+# results
+#  │
+#  └───entropy
+#         │
+#  │      └ entropies.csv
+#  │
+#  └───robustness
+#         │
+#         └ robustness.csv
+
 library("ggpubr")
 
 entropies <- read.csv("entropy/entropies.csv")
@@ -26,10 +38,22 @@ ggscatter(merged, x = "EL", y = "robustness",
           cor.coef = TRUE, cor.method = "spearman",
           xlab = "Entropy Loss", ylab = "Robustness")
 dev.off()
+pdf(file = "ELvsRobustness_pearson.pdf")
+ggscatter(merged, x = "EL", y = "robustness", 
+          add = "reg.line", conf.int = TRUE, 
+          cor.coef = TRUE, cor.method = "pearson",
+          xlab = "Entropy Loss", ylab = "Robustness")
+dev.off()
 
 pdf(file = "normELvsRobustness_spearman.pdf")
 ggscatter(merged, x = "norm_EL", y = "robustness", 
           add = "reg.line", conf.int = TRUE, 
           cor.coef = TRUE, cor.method = "spearman",
+          xlab = "Normalized Entropy Loss", ylab = "Robustness")
+dev.off()
+pdf(file = "normELvsRobustness_pearson.pdf")
+ggscatter(merged, x = "norm_EL", y = "robustness", 
+          add = "reg.line", conf.int = TRUE, 
+          cor.coef = TRUE, cor.method = "pearson",
           xlab = "Normalized Entropy Loss", ylab = "Robustness")
 dev.off()
