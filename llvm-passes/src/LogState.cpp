@@ -155,7 +155,7 @@ FunctionCallee insertFunCallCounterIncrement(BasicBlock &BB, IRBuilder<> *Builde
 
   params.push_back(charPtrTy);
 
-  StringRef InstrumentingFunctionName = "get_function_execution_count";
+  StringRef InstrumentingFunctionName = "increment_function_execution_counter";
 
   FunctionType* funcTy = FunctionType::get(voidTy, params, false);
   
