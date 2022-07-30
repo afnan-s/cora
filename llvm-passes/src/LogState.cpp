@@ -468,7 +468,8 @@ bool LogState::runOnModule(Module &M) {
     //DEBUG
     
     // Loop through all basic blocks in function F
-    for (auto &BB : F) {
+    // for (auto &BB : F) {
+    for (auto BB = F.begin(), BE = F.end(); BB != BE, ++BB){
 
       // Loop over all instructions in the block. Inst iterator also
       // helps locating instructions for insertion.
@@ -476,9 +477,10 @@ bool LogState::runOnModule(Module &M) {
         errs() << "Inside Inst loop. Considering: " << *Inst << "\n";
 
         // Check if first instruction in a function:
-        BasicBlock* firstBB = &*(F.begin());
+        // BasicBlock* firstBB = &*(F.begin());
 
-        if(Inst == BB.begin() && BB == firstBB){
+        // if(Inst == BB.begin() && BB == firstBB){
+        if(Inst == BB.begin() && BB == F.begin()){
           IRBuilder<> Builder(&*(Inst));
           insertFunCallCounterIncrement(BB, &Builder);
 
