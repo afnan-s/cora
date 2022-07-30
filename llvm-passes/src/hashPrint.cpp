@@ -50,7 +50,7 @@ extern "C" void increment_function_execution_counter(string function_name){
 
 }
 
-extern "C" void printHash(int line, string function_name){
+extern "C" void printHash(int line, char * function_name){
 	// Couple this store inst number with the function execution count (uniquely identifies a function's execution)
 	string storeID = to_string(line)+"_"+to_string(get_function_execution_count(function_name));
 	// If this store was already executed within this function call, it is a loop
