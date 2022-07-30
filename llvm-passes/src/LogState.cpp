@@ -469,7 +469,7 @@ bool LogState::runOnModule(Module &M) {
     
     // Loop through all basic blocks in function F
     // for (auto &BB : F) {
-    for (auto BB = F.begin(), BE = F.end(); BB != BE, ++BB){
+    for (auto BB = F.begin(), BE = F.end(); BB != BE; ++BB){
 
       // Loop over all instructions in the block. Inst iterator also
       // helps locating instructions for insertion.
