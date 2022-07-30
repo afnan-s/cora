@@ -166,7 +166,7 @@ FunctionCallee insertFunCallCounterIncrement(BasicBlock &BB, IRBuilder<> *Builde
   FunctionCallee hook = M->getOrInsertFunction(InstrumentingFunctionName, funcTy);
   std::vector<Value*> args;
   // for(unsigned int i=0; i< funcTy->getNumParams(); ++i){
-  args.push_back(Builder->CreateGlobalStringPtr(currentFunctionName));
+  args.push_back(Builder->CreateGlobalString(currentFunctionName));
   // args.push_back(ConstantInt::get(boolTy, is_in_loop));
   // args.push_back(bufferPtr);
   // }//end for

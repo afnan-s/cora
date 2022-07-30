@@ -65,7 +65,7 @@ RUN clang -S -emit-llvm test.c -o ../bin/test.ll
 
 WORKDIR /app/
 
-# RUN opt -load llvm-passes/build/libPerState.so -legacy-log-state -S src/bin/test.ll -o src/instrumented/tmp.ll -enable-new-pm=0
+# RUN opt -load llvm-passes/build/libPerState.so -legacy-log-state --debugger-tune=gdb -S src/bin/test.ll -o src/instrumented/tmp.ll -enable-new-pm=0
 # RUN llvm-link -suppress-warnings src/instrumented/tmp.ll llvm-passes/src/hashPrint.ll -S -o src/instrumented/test.ll
 # RUN rm src/instrumented/tmp.ll
 # RUN lli src/instrumented/test.ll
