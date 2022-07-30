@@ -155,22 +155,16 @@ FunctionCallee insertFunCallCounterIncrement(BasicBlock &BB, IRBuilder<> *Builde
 
   params.push_back(charPtrTy);
 
-  StringRef InstrumentingFunctionName = "increment_function_execution_counter";
+  StringRef InstrumentingFunctionName = "get_function_execution_count";
 
   FunctionType* funcTy = FunctionType::get(voidTy, params, false);
   
   // Specify the return value, arguments, and if there are variable number of arguments.
   Function::Create(funcTy, llvm::GlobalValue::ExternalLinkage)->setName(InstrumentingFunctionName);
-  // std::vector<llvm::Type*> params;
-  // params.push_back(charPtrTy);
   FunctionCallee hook = M->getOrInsertFunction(InstrumentingFunctionName, funcTy);
   std::vector<Value*> args;
-  // for(unsigned int i=0; i< funcTy->getNumParams(); ++i){
-  args.push_back(Builder->CreateGlobalString(currentFunctionName));
-  // args.push_back(ConstantInt::get(boolTy, is_in_loop));
-  // args.push_back(bufferPtr);
-  // }//end for
-  // CallInst::Create(hook, args)->insertAfter(I);
+  args.push_back(Builder->CreateGlobalStringPtr(currentFunctionName));
+
   Builder->CreateCall(hook, args);
 
   return hook;
@@ -463,6 +457,7 @@ bool LogState::runOnModule(Module &M) {
   for (auto &F : M) {
     errs() << "Inside function loop. Considering function: " << F.getName() << "\n";
     if(F.isDeclaration()) continue;
+
     // std::string function_name = (std::string)F.getName();
     // if (function_name.compare("prinft") == 0) {errs() << "reached printf()\n"; continue;}
     // if (function_name.compare("__sprintf_chk") == 0 ) {errs() << "reached __sprintf_chk()\n"; continue;}
@@ -479,6 +474,13 @@ bool LogState::runOnModule(Module &M) {
       // helps locating instructions for insertion.
       for (auto Inst = BB.begin(), IE = BB.end(); Inst != IE; ++Inst) {
         errs() << "Inside Inst loop. Considering: " << *Inst << "\n";
+
+        // Check if first instruction in a function:
+        if(Inst == BB->begin() && BB == F->begin()){
+          IRBuilder<> Builder(&*(Inst));
+          insertFunCallCounterIncrement(BB, Builder);
+
+        }
         //Check if current inst is alloca instruction (defining a variable):
         //and it is of primitive type
         AllocaInst *AI = dyn_cast<AllocaInst>(Inst);
