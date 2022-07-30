@@ -98,19 +98,23 @@ bool zeroInit(BasicBlock::iterator &Inst, BasicBlock &BB){
 }
 
 //-----------------------------------------------------------------------------
-// Inserting a hash/print function just after instruction I
+// Inserting a hash/print function just after Store instruction I
 //-----------------------------------------------------------------------------
 
 FunctionCallee insertPrintHashFunction(BasicBlock &BB, IRBuilder<> *Builder){
   
   auto &Context = BB.getContext();
+  const auto &M = BB.getModule();
+  StringRef currentFunctionName = BB.getParent()->getName();
+
   Type* voidTy = Type::getVoidTy(Context);
-  std::vector<Type*> params;
   Type* charPtrTy = Type::getInt8PtrTy(Context);
   Type* intTy = Type::getInt32Ty(Context);
 
+  std::vector<Type*> params;
+
   params.push_back(intTy);
-  // params.push_back(charPtrTy);
+  params.push_back(charPtrTy);
 
   StringRef InstrumentingFunctionName = "printHash";
 
@@ -118,19 +122,60 @@ FunctionCallee insertPrintHashFunction(BasicBlock &BB, IRBuilder<> *Builder){
   
   // Specify the return value, arguments, and if there are variable number of arguments.
   Function::Create(funcTy, llvm::GlobalValue::ExternalLinkage)->setName(InstrumentingFunctionName);
-  const auto &M = BB.getModule();
   // std::vector<llvm::Type*> params;
   // params.push_back(charPtrTy);
   FunctionCallee hook = M->getOrInsertFunction(InstrumentingFunctionName, funcTy);
   std::vector<Value*> args;
   // for(unsigned int i=0; i< funcTy->getNumParams(); ++i){
   args.push_back(ConstantInt::get(intTy, storeCounter));
+  args.push_back(Builder->CreateGlobalStringPtr(currentFunctionName));
+  // args.push_back(ConstantInt::get(boolTy, is_in_loop));
   // args.push_back(bufferPtr);
   // }//end for
   // CallInst::Create(hook, args)->insertAfter(I);
   Builder->CreateCall(hook, args);
 
   return hook;
+}//end function insertRandFunction
+
+//-----------------------------------------------------------------------------
+// Inserting a function-call-counter incrementer function 
+//-----------------------------------------------------------------------------
+
+FunctionCallee insertFunCallCounterIncrement(BasicBlock &BB, IRBuilder<> *Builder){
+  
+  auto &Context = BB.getContext();
+  const auto &M = BB.getModule();
+  StringRef currentFunctionName = BB.getParent()->getName();
+
+  Type* voidTy = Type::getVoidTy(Context);
+  Type* charPtrTy = Type::getInt8PtrTy(Context);
+
+  std::vector<Type*> params;
+
+  params.push_back(charPtrTy);
+
+  StringRef InstrumentingFunctionName = "increment_function_execution_counter";
+
+  FunctionType* funcTy = FunctionType::get(voidTy, params, false);
+  
+  // Specify the return value, arguments, and if there are variable number of arguments.
+  Function::Create(funcTy, llvm::GlobalValue::ExternalLinkage)->setName(InstrumentingFunctionName);
+  // std::vector<llvm::Type*> params;
+  // params.push_back(charPtrTy);
+  FunctionCallee hook = M->getOrInsertFunction(InstrumentingFunctionName, funcTy);
+  std::vector<Value*> args;
+  // for(unsigned int i=0; i< funcTy->getNumParams(); ++i){
+  args.push_back(Builder->CreateGlobalStringPtr(currentFunctionName));
+  // args.push_back(ConstantInt::get(boolTy, is_in_loop));
+  // args.push_back(bufferPtr);
+  // }//end for
+  // CallInst::Create(hook, args)->insertAfter(I);
+  Builder->CreateCall(hook, args);
+
+  return hook;
+  
+ 
 }//end function insertRandFunction
 
 //-----------------------------------------------------------------------------
@@ -219,11 +264,10 @@ std::string getFormat(Type* type, LLVMContext* llvmContext){
 
 } // End of function isPrmitive
 
-
 //-----------------------------------------------------------------------------
 
 bool addPrint(BasicBlock::iterator &Inst, BasicBlock &BB, std::list<AllocaInst*> allocas, Module::GlobalListType *globals){
-  // errs() << "Inside addPrint() for " << *Inst << "\n\n";
+  errs() << "Inside addPrint() for " << *Inst << "\n\n";
   
 
   ////// Define Pointers to Common Types //////
@@ -411,25 +455,30 @@ bool LogState::runOnModule(Module &M) {
   //   errs() << V.getKeyData() << " = " << *(ST.lookup(V.getKeyData())) << "\nh\n";
   // }
 
-  // Define the types to be investigated:
   auto &llvmContext = M.getContext();
 
   Module::GlobalListType &globals = M.getGlobalList();
 
   // Loop through all functions in Module
   for (auto &F : M) {
+    errs() << "Inside function loop. Considering function: " << F.getName() << "\n";
+    if(F.isDeclaration()) continue;
+    // std::string function_name = (std::string)F.getName();
+    // if (function_name.compare("prinft") == 0) {errs() << "reached printf()\n"; continue;}
+    // if (function_name.compare("__sprintf_chk") == 0 ) {errs() << "reached __sprintf_chk()\n"; continue;}
+    // Get a LoopInfo object of the current function
+
     // Define a list to hold all alloca instructions:
     std::list<AllocaInst*> allocas;
     //DEBUG
-    // errs() << "Instrumenting function " << F.getName() << "\n";
-
+    
     // Loop through all basic blocks in function F
     for (auto &BB : F) {
 
       // Loop over all instructions in the block. Inst iterator also
       // helps locating instructions for insertion.
       for (auto Inst = BB.begin(), IE = BB.end(); Inst != IE; ++Inst) {
-        // errs() << "Inside Inst loop. Considering: " << *Inst << "\n";
+        errs() << "Inside Inst loop. Considering: " << *Inst << "\n";
         //Check if current inst is alloca instruction (defining a variable):
         //and it is of primitive type
         AllocaInst *AI = dyn_cast<AllocaInst>(Inst);
@@ -444,21 +493,24 @@ bool LogState::runOnModule(Module &M) {
           // Proceed to next instruction:
           continue;
         } // end if alloca instruction
-
         // Now check for a store instruction:
         // Skip this iteration if Instruction not a Store instruction
         // or one of a non-primitive type
         auto *SI = dyn_cast<StoreInst>(Inst);
-
         if (SI && isPrimitivePtr(SI->getPointerOperandType(), &llvmContext)){
+          errs() << "Turns out, this is a store instruction, oh joy!\n";
           storeCounter++;
+          // Note: need to dereference then reference Inst (i.e. &*Inst) in order to
+          // pass the Instruction object and not the iterator. 
           addPrint(Inst, BB, allocas, &globals);
         } // end if Store instruction
-
+        
       } //end for instructions in BB
+      errs() << "End of instructions in BB\n";
     } //end for basic blocks BB in F
+    errs() << "End of BBs in F\n";
   } //end for functions F in M
-
+  errs() << "End of Fs in M\n";
   // At the end of the loops, currentInst contains the instruction where we would like to perturb
   // while currentBB is the basic block that contains it
   // allocas_limit contains the limit of allocas that contain defined variables at the point of perturbation
@@ -480,7 +532,9 @@ PreservedAnalyses LogState::run(llvm::Module &M,
 
 bool LegacyLogState::runOnModule(llvm::Module &M) {
   // BOOST_LOG_TRIVIAL(info) << "An informational severity message2";
+  errs() << "Before calling runOnModule\n";
   bool Changed = Impl.runOnModule(M);
+  errs() << "AFTER calling runOnModule\n";
   //Print final message:
   // errs() << "Finished pass. Number of changed instructions is " << SubstCount << ".\n";
   //errs() << "Substitued Instructions: \n" << message;

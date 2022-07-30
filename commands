@@ -3,4 +3,5 @@
 docker build -t rna_new -f dataset/RNAfold/Dockerfile .
 docker build -t shoco_img -f dataset/shoco/Dockerfile .
 docker build -t wc_img -f dataset/wc/Dockerfile .
+docker build -t test_img -f dataset/test/Dockerfile .
 

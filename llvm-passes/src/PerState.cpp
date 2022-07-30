@@ -188,8 +188,8 @@ bool replace(BasicBlock::iterator &Inst, BasicBlock &BB){
 
   // Insert print statement to confirm execution of perturbation site:
   // Create call to printf:
-  std::vector<Value *> printArgs;
-  FunctionType* printfFT = FunctionType::get(intTy, charptrTy, true);
+  // std::vector<Value *> printArgs;
+  // FunctionType* printfFT = FunctionType::get(intTy, charptrTy, true);
 
   // auto* formatStr = Builder.CreateGlobalStringPtr("\nS#%d Executed.\n");
 
