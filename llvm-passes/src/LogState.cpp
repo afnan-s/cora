@@ -476,9 +476,9 @@ bool LogState::runOnModule(Module &M) {
         errs() << "Inside Inst loop. Considering: " << *Inst << "\n";
 
         // Check if first instruction in a function:
-        if(Inst == BB->begin() && BB == F->begin()){
+        if(Inst == BB.begin() && BB == F.begin()){
           IRBuilder<> Builder(&*(Inst));
-          insertFunCallCounterIncrement(BB, Builder);
+          insertFunCallCounterIncrement(BB, &Builder);
 
         }
         //Check if current inst is alloca instruction (defining a variable):
