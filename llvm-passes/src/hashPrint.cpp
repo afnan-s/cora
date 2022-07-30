@@ -43,7 +43,7 @@ int get_function_execution_count(string function_name){
 
 }
 
-extern "C" void increment_function_execution_counter(string function_name){
+extern "C" void increment_function_execution_counter(char * function_name){
 
 	int func_exec_count = get_function_execution_count(function_name);
 	function_execution_counts[function_name] = ++func_exec_count;
