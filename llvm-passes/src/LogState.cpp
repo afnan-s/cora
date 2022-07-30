@@ -476,7 +476,7 @@ bool LogState::runOnModule(Module &M) {
         errs() << "Inside Inst loop. Considering: " << *Inst << "\n";
 
         // Check if first instruction in a function:
-        BasicBlock* firstBB = F.begin();
+        BasicBlock* firstBB = &*(F.begin());
 
         if(Inst == BB.begin() && BB == firstBB){
           IRBuilder<> Builder(&*(Inst));
