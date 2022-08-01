@@ -473,7 +473,7 @@ bool LogState::runOnModule(Module &M) {
         // function call counter. 
 
         // Create a BB and insert it before firstBB:
-        BasicBlock* newFirstBB = BasicBlock::Create(llvmContext, "FunCall Incrementer", firstBB);
+        BasicBlock* newFirstBB = BasicBlock::Create(llvmContext, "FunCall Incrementer", nullptr , firstBB);
         IRBuilder<> Builder(&(newFirstBB->front()));
         insertFunCallCounterIncrement(&newFirstBB, &Builder);
       }
