@@ -456,33 +456,41 @@ bool LogState::runOnModule(Module &M) {
   // Loop through all functions in Module
   for (auto &F : M) {
     errs() << "Inside function loop. Considering function: " << F.getName() << "\n";
+    
+    // Skip function declarations (i.e. no definition)
     if(F.isDeclaration()) continue;
-
-    // std::string function_name = (std::string)F.getName();
-    // if (function_name.compare("prinft") == 0) {errs() << "reached printf()\n"; continue;}
-    // if (function_name.compare("__sprintf_chk") == 0 ) {errs() << "reached __sprintf_chk()\n"; continue;}
-    // Get a LoopInfo object of the current function
 
     // Define a list to hold all alloca instructions:
     std::list<AllocaInst*> allocas;
-    //DEBUG
     
     // Loop through all basic blocks in function F
     for (auto &BB : F) {
+
+      // Check if first BB in the function:
+      BasicBlock* firstBB = &*(F.begin());
+      if(&BB == firstBB){
+        // This is first BB, insert a BB before that increments
+        // function call counter. 
+
+        // Create a BB and insert it before firstBB:
+        BasicBlock* newFirstBB = BasicBlock::Create(llvmContext, firstBB);
+        IRBuilder<> Builder(newFirstBB->front());
+        insertFunCallCounterIncrement(newFirstBB, &Builder);
+      }
 
       // Loop over all instructions in the block. Inst iterator also
       // helps locating instructions for insertion.
       for (auto Inst = BB.begin(), IE = BB.end(); Inst != IE; ++Inst) {
         errs() << "Inside Inst loop. Considering: " << *Inst << "\n";
 
-        // Check if first instruction in a function:
-        BasicBlock* firstBB = &*(F.begin());
+        // // Check if first instruction in a function:
+        // BasicBlock* firstBB = &*(F.begin());
 
-        if(Inst == BB.begin() && &BB == firstBB){
-          IRBuilder<> Builder(&*(Inst));
-          insertFunCallCounterIncrement(BB, &Builder);
+        // if(Inst == BB.begin() && &BB == firstBB){
+        //   IRBuilder<> Builder(&*(Inst));
+        //   insertFunCallCounterIncrement(BB, &Builder);
 
-        }
+        // }
         //Check if current inst is alloca instruction (defining a variable):
         //and it is of primitive type
         AllocaInst *AI = dyn_cast<AllocaInst>(Inst);
