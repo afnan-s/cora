@@ -42,44 +42,64 @@ double dgbariable = 6.7;
 //     printf("defined z = 6 + 4\n");
 // }
 
-int test1(){
-    return 1;
-}
+// int test1(){
+//     return 1;
+// }
 
-void test3(){
+// void test3(){
 
-    for(int i = 0; i < 5; i++){
-        int j = 1;
-        int k = 2;
-        float x = 3;
-        float y = 4;
-        float z = 5;
+//     for(int i = 0; i < 5; i++){
+//         int j = 1;
+//         int k = 2;
+//         float x = 3;
+//         float y = 4;
+//         float z = 5;
 
-        printf("Inside first for loop; iteration %d. j = %d. k = %d. x = %f. y = %f. z = %f.\n", i, j, k, x, y, z);
-    }
-    int a = 7;
-    while (1){
-        printf("Inside while loop. iteration: %d\n", a);
-        a--;
-        if(a < 0)
-            break;
-    }
-
-
-}
+//         printf("Inside first for loop; iteration %d. j = %d. k = %d. x = %f. y = %f. z = %f.\n", i, j, k, x, y, z);
+//     }
+//     int a = 7;
+//     while (1){
+//         printf("Inside while loop. iteration: %d\n", a);
+//         a--;
+//         if(a < 0)
+//             break;
+//     }
 
 
-int main(int argc, char *argv[]) {
-    test3();
-    for(int b = 5; b < 9; b++){
-        int c = b+1;
-        printf("Inside main for loop. b = %d. c = %d \n", b, c);
-        test3();
-    }  
-    test3();
-    printf("Hello! We are inside Main()\n");
+// }
+
+
+// int main(int argc, char *argv[]) {
+//     test3();
+//     for(int b = 5; b < 9; b++){
+//         int c = b+1;
+//         printf("Inside main for loop. b = %d. c = %d \n", b, c);
+//         test3();
+//     }  
+//     test3();
+//     printf("Hello! We are inside Main()\n");
     
 
-    return 0;
+//     return 0;
     
+// }
+
+void test4(int i){
+    if(i<0) return;
+    
+    for(int j = 1; j < 3; j++){
+        int a = i+j;
+        test4(i-j);
+        int c = i-j;
+        int d = i-j-5;
+    }
+}
+
+
+
+int main(){
+
+    test4(4);
+
+
 }
