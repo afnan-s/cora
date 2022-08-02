@@ -258,7 +258,7 @@ std::string getFormat(Type* type, LLVMContext* llvmContext){
 //-----------------------------------------------------------------------------
 
 bool addPrint(BasicBlock::iterator &Inst, BasicBlock &BB, std::list<AllocaInst*> allocas, Module::GlobalListType *globals, Constant* funcNamePtr){
-  errs() << "Inside addPrint() for " << *Inst << "\n\n";
+  // errs() << "Inside addPrint() for " << *Inst << "\n\n";
   
 
   ////// Define Pointers to Common Types //////
