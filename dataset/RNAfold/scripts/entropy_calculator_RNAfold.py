@@ -149,27 +149,31 @@ if __name__ == "__main__":
 						# if out_line == "":
 						# 	out_line = lines[-2]
 						with open(os.path.join(results_path, results_out_file_name+"_out"), 'rb') as o:
-							out_line = o.read()#.strip()
+							out_line = o.read()
 							# print("out line: "+out_line)
 
-						for line in lines:
-							if line == "" or line == out_line:
-								continue
+							for line in lines:
+								if line == "" or line == out_line:
+									continue
 
-							store_num = line.split(',')[0] 
+								store_num = line.split(',')[0] 
 
-							if store_num == "" :
-								continue
+								if store_num == "" :
+									continue
 
-							if store_num not in program_state_frequencies:
-								program_state_frequencies[store_num] = {}
+								if store_num not in program_state_frequencies:
+									program_state_frequencies[store_num] = {}
 
-							program_state_frequencies[store_num][line] = program_state_frequencies[store_num].get(line, 0) + 1
+								if out_line not in program_state_frequencies[store_num]:
+									program_state_frequencies[store_num][out_line] = {}
 
-							if store_num not in out_frequencies:
-								out_frequencies[store_num] = {}
+								program_state_frequencies[store_num][out_line][line] = program_state_frequencies[store_num][out_line].get(line, 0) + 1
 
-							out_frequencies[store_num][out_line] = out_frequencies[store_num].get(out_line, 0) + 1
+								if store_num not in out_frequencies:
+									out_frequencies[store_num] = {}
+
+								# To keep track of outputs and their frequencies only in runs that trigger that store inst
+								out_frequencies[store_num][out_line] = out_frequencies[store_num].get(out_line, 0) + 1
 					
 					# TESTING: comment the next two line in order to keep the raw instrumentation output:
 					# Deleting them here in order to save space:
@@ -271,27 +275,55 @@ if __name__ == "__main__":
 	# Define dictionaries holding the entropies of the different Input/Output states:
 	entLoss = {}
 	normEntLoss = {}
-
+	normCE = {}
+	cond_Entropies = {}
 	in_entropies = {}
 	out_entropies = {}
 
 	# Loop through the stores dictionaires:
 	for store in program_state_frequencies:
-		
-		# (number of trials for each)
-		in_num_states = sum(program_state_frequencies[store].values())
-		out_num_states = sum(out_frequencies[store].values())
-		# assert(in_num_states == out_num_states)
-		in_entropy = 0
-		out_entropy = 0
 
-		# For each store instruction, calculate the H(I) at pp after that store instruction
-		for state in program_state_frequencies[store]:
-			# estimated probability for each state is #of occurence / # of trials
-			in_prob = program_state_frequencies[store][state] / in_num_states
-			in_entropy += in_prob * math.log2(in_prob)
-		in_entropy *= -1
+		# overall entropy of store H(In)
+		in_entropy = 0
+		all_states = {}
+		cond_entropy = 0
+		# Calculate H(Store | O) for each In
+		for out_line in program_state_frequencies[store]:
 		
+			# (number of trials/runs for each)
+			in_num_states = sum(program_state_frequencies[store][out_line].values())
+			out_num_states = sum(out_frequencies[store].values())
+
+			# Calculate entropy of partial In partitioned on O = out_line
+			partial_in_entropy = 0
+			out_entropy = 0
+			
+
+			# For each store instruction, calculate the H(I) at pp after that store instruction
+			for state in program_state_frequencies[store][out_line]:
+				state_frequency = program_state_frequencies[store][out_line][state]
+
+				all_states[state] = all_states.get(state, 0) + state_frequency
+				
+				# estimated probability for each state is #of occurence / # of trials (runs)
+				in_prob = state_frequency / in_num_states
+				partial_in_entropy += in_prob * math.log2(in_prob)
+			partial_in_entropy *= -1
+
+
+			# Now calculate p(out_line):
+			prob_out_line = out_frequencies[store][out_line] / out_num_states
+
+			cond_entropy += prob_out_line * partial_in_entropy
+
+		cond_Entropies[store] = cond_entropy
+		
+		# Now calculate the overall entropy H(In)
+		for state in all_states:
+			state_prob = all_states[state] / sum(all_states.values())
+			in_entropy += state_prob * math.log2(state_prob)
+		
+		in_entropy *= -1
 		in_entropies[store] = in_entropy
 
 		# Now calculate H(O) (taking into account only outputs of an execution path through the current store instruction)
@@ -307,17 +339,19 @@ if __name__ == "__main__":
 
 
 	# Define entropies.csv header and contents
-	ent_csv_header = ["project_name", "store#", "H(I)", "H(O)", "EL", "norm_EL"]
+	ent_csv_header = ["project_name", "store#", "H(I)", "H(O)", "EL H(I)-H(O)", "norm_EL", "CE", "norm_CE", "instrumented_stores"]
 	ent_csv_rows = []
 
 
-	for store in in_entropies:
+	for store in program_state_frequencies:
 		entLoss[store] = in_entropies[store] - out_entropies[store]
 		if in_entropies[store] != 0:
 			normEntLoss[store] = entLoss[store] / in_entropies[store]
+			normCE[store] = cond_Entropies[store] / in_entropies[store]
 		else:
 			normEntLoss[store] = math.inf
-		ent_csv_rows.append([project_name, store, in_entropies[store], out_entropies[store], entLoss[store], normEntLoss[store]])
+			normCE[store] = math.inf
+		ent_csv_rows.append([project_name, store, in_entropies[store], out_entropies[store], entLoss[store], normEntLoss[store], cond_Entropies[store], normCE[store], instrumented_stores])
 
 	# Check if entropies.csv exists:
 	first_time = True

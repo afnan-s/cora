@@ -1,6 +1,7 @@
 #include <stdio.h>
-int igvariable = 4;
-double dgbariable = 6.7;
+#include <stdlib.h>
+// int igvariable = 4;
+// double dgbariable = 6.7;
 
 // int test1()
 // {
@@ -84,22 +85,28 @@ double dgbariable = 6.7;
     
 // }
 
-void test4(int i){
-    if(i<0) return;
+// void test4(int i){
+//     if(i<0) return;
     
-    for(int j = 1; j < 3; j++){
-        int a = i+j;
-        test4(i-j);
-        int c = i-j;
-        int d = i-j-5;
-    }
+//     for(int j = 1; j < 3; j++){
+//         int a = i+j;
+//         test4(i-j);
+//         int c = i-j;
+//         int d = i-j-5;
+//     }
+// }
+
+
+int test5(int x){
+    if(x%2 == 0)
+        return 0;
+    return 1;
 }
 
 
+int main(int argc, char *argv[]){
 
-int main(){
-
-    test4(4);
+    printf("%d", test5(atoi(argv[1])));
 
 
 }

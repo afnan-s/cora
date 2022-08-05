@@ -68,7 +68,10 @@ WORKDIR /app/
 RUN opt -load llvm-passes/build/libPerState.so -legacy-log-state --debugger-tune=gdb -S src/bin/test.ll -o src/instrumented/tmp.ll -enable-new-pm=0
 RUN llvm-link -suppress-warnings src/instrumented/tmp.ll llvm-passes/src/hashPrint.ll -S -o src/instrumented/test.ll
 # RUN rm src/instrumented/tmp.ll
-RUN lli src/instrumented/test.ll
+# RUN lli src/instrumented/test.ll
+
+# RUN python3 scripts/entropy_calculator_test.py src/bin/test.ll src/test/tests \
+# &&  python3 scripts/robustness_calculator_test.py src/bin/test.ll src/test/tests 
 
 # For testing:
 CMD tail -f /dev/null

@@ -1,6 +1,0 @@
-# cd to root (where this file is)
-
-docker build -t test_img -f dataset/test/Dockerfile .
-docker build -t rna_img -f dataset/RNAfold/Dockerfile .
-docker build -t shoco_img -f dataset/shoco/Dockerfile .
-docker build -t factor_img -f dataset/factor/Dockerfile .

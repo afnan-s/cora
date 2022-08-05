@@ -539,6 +539,8 @@ bool LogState::runOnModule(Module &M) {
   // Update the statistic
   // ++SubstCount;
 
+  // Output the number of instrumented statements (i.e. Store Instructions:)
+  errs() << storeCounter << "\n";
   return Changed;
 }
 

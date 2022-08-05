@@ -1,2 +1,4 @@
 /dataset/gzip
 /dataset/wc
+/dataset/coreutils/expr/src/expr/tests/uniform_bat
+/dataset/coreutils/expr/src/expr/tests/generators/extract_expr.py
