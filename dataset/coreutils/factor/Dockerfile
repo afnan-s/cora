@@ -79,10 +79,10 @@ WORKDIR /app/src/bin/
 WORKDIR /app/
 
 # This does not work (produces empty output files.)
-RUN python3 scripts/entropy_calculator_factor.py src/bin/factor.ll src/factor/tests/uniform \
-&&  python3 scripts/robustness_calculator_factor.py src/bin/factor.ll src/factor/tests/uniform 
-# Hence:
-# RUN ./scripts/conductor_factor.sh
+# RUN python3 scripts/entropy_calculator_factor.py src/bin/factor.ll src/factor/tests/uniform \
+# &&  python3 scripts/robustness_calculator_factor.py src/bin/factor.ll src/factor/tests/uniform 
+# # Nor does this:
+# # RUN ./scripts/conductor_factor.sh
 
 
 

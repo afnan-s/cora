@@ -257,8 +257,8 @@ if __name__ == "__main__":
 	elapsed_all = end_all - start_all
 
 	# TESTING (Warning, this generates very large files)
-	json.dump(program_state_frequencies, open(os.path.join(results_path,"program_state_frequencies.json"), 'w'))
-	json.dump(out_frequencies, open(os.path.join(results_path,"out_frequencies.json"), 'w'))
+	# json.dump(program_state_frequencies, open(os.path.join(results_path,"program_state_frequencies.json"), 'w'))
+	# json.dump(out_frequencies, open(os.path.join(results_path,"out_frequencies.json"), 'w'))
 
 	print("\r[Done] Running Tests and calculating entropies.\nSuccessful inputs: "+str(successful_inputs)+".\nOverall time taken: "+ str(elapsed_all/60)+" minutes. ")
 
