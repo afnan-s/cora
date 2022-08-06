@@ -8,6 +8,8 @@ import json
 import math
 from itertools import zip_longest
 import re
+from executor import execute_lli
+
 natsort = lambda s: [int(t) if t.isdigit() else t.lower() for t in re.split('(\d+)', s)]
 
 
@@ -64,11 +66,9 @@ if __name__ == "__main__":
 	project_name = (sut_ll_file.split(".")[-2]).split("/")[-1]
 
 	# Prepare the location to put the perturbed file
-	# perturbed_path = os.path.join("dataset/perturbed/", project_name)
 	perturbed_path = "src/perturbed/"
 
 	# Prepare the results location
-	# results_path = os.path.join("results/", project_name)
 	results_path = "results/"
 	# ll file of the random generator function (for linking)
 	if mode == "bit":
@@ -129,7 +129,6 @@ if __name__ == "__main__":
     # Create the results folder:
 	if not os.path.isdir(results_path):
 		os.mkdir(results_path)
-	# results_path = os.path.join("results/", project_name+"/robustness")
 	results_path = "results/robustness"
 	if not os.path.isdir(results_path):
 		os.mkdir(results_path)
@@ -172,15 +171,8 @@ if __name__ == "__main__":
 					continue
 
 				for j in range(runs):
-					with open(os.path.join(in_dir, in_file_name), 'r') as input_file:
-						intput_number = input_file.read().strip()
-						# p = subprocess.Popen(['lli', '--extra-archive=src/bin/libver.a --extra-archive=src/bin/libcoreutils.a --extra-archive=src/bin/libc_nonshared.a --dlopen=src/bin/libgmp.so', os.path.join(perturbed_path, variant_file_name), input_number, '>', perturbed_out_file_name ], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
-						# print(p)
-						subprocess.call('lli --extra-archive=src/bin/libver.a --extra-archive=src/bin/libcoreutils.a --extra-archive=src/bin/libc_nonshared.a --dlopen=src/bin/libgmp.so '+os.path.join(perturbed_path, variant_file_name)+' '+intput_number+' > '+perturbed_out_file_name, shell=True, timeout=1*60*60)
-						# perturbed_output = p.communicate(input=(test+"\n").encode(encoding='UTF-8'))[0].decode("utf-8")
-						# perturbed_output = p.communicate(input=(str(test)+"\n").encode(encoding='UTF-8'))[0]
-						# out = p.communicate()
-					
+
+					execute_lli(os.path.join(perturbed_path, variant_file_name), os.path.join(in_dir, in_file_name), perturbed_out_file_name)
 
 					# Check whether the run produced the output file:
 					if not os.path.exists(perturbed_out_file_name):
@@ -201,20 +193,8 @@ if __name__ == "__main__":
 					# Count this as an input causing execution of perturbation site:
 					if j == 0:
 						input_causing_execution += 1
-					# Check whether the disruption propagated (by comparing outputs)
-					# with open(correct_out_file_name, 'rb') as co:
-					# 	with open(perturbed_out_file_name, 'rb') as po:
-					# 		correct_output = co.read()#.encode(encoding='UTF-8')
-					# 		perturbed_output = po.read()#.encode(encoding='UTF-8')
-					# 		# if perturbed_output.strip() == correct_output.strip():
-					# 		# if str(perturbed_output).strip() == str(correct_output).strip():
-					# 		if str(perturbed_output) == str(correct_output):
-					# 			fdp += 1
-					# 		else:
-					# 			dp += 1
 
-					# 		total_variant_runs += 1
-					# 		total_runs += 1
+					# Check whether the disruption propagated (by comparing outputs)
 					if compare_binaries(correct_out_file_name, perturbed_out_file_name):
 						fdp += 1
 					else:

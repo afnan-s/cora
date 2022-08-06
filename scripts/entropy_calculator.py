@@ -8,11 +8,13 @@ import json
 import math
 import time
 import re
+from executor import execute_lli
 natsort = lambda s: [int(t) if t.isdigit() else t.lower() for t in re.split('(\d+)', s)]
 
 # script is called with 2 arugments: 
 # 1 is the location of the ll file under test
-# 2 is the location of the test input/output files
+# 2 is the location of the test input files. This script ends up adding the output of each of the tests in the same directory. 
+
 
 # Example: 
 # python3 scripts/entropy_calculator.py dataset/ds-bitcode/median.ll dataset/IntroClass/median/tests/whitebox
@@ -43,10 +45,8 @@ if __name__ == "__main__":
 	project_name = (sut_ll_file.split(".")[-2]).split("/")[-1]
 
 	# Prepare the location to put the instrumented file
-	# instrumented_path = os.path.join("src/instrumented/", project_name)
 	instrumented_path = "src/instrumented/"
 	# Prepare the results location
-	# results_path = os.path.join("results/", project_name)
 	results_path = "results/"
 	# ll file of the hashprint function (for linking)
 	hash_function_path = 'llvm-passes/src/hashPrint.ll'
@@ -60,14 +60,14 @@ if __name__ == "__main__":
 	if not os.path.isdir(instrumented_path):
 		os.mkdir(instrumented_path)
 	instrumented_file = os.path.join(instrumented_path, project_name+".ll")
-	result1 = subprocess.run(['opt', '-load', 'llvm-passes/build/libPerState.'+lib_extension, '-legacy-log-state', '-S', sut_ll_file, '-o', instrumented_file, '-enable-new-pm=0'], stdout=subprocess.PIPE)
+	result1 = subprocess.run(['opt', '-O0', '-load', 'llvm-passes/build/libPerState.'+lib_extension, '-legacy-log-state', '-S', sut_ll_file, '-o', instrumented_file, '-enable-new-pm=0'], stderr=subprocess.PIPE, universal_newlines=True)
 	if result1.returncode != 0:
 		print("Error: opt command exited with code "+str(result1.returncode))
 		print(result1)
 		quit()
 
 	instrumented_stores = int(result1.stderr.strip())
-	
+
 	result2 = subprocess.run(['llvm-link', '-suppress-warnings', instrumented_file, hash_function_path, '-S', '-o', instrumented_file], stdout=subprocess.PIPE)
 	if result2.returncode != 0:
 		print("Error: llvm-link command exited with code "+str(result2.returncode))
@@ -80,7 +80,6 @@ if __name__ == "__main__":
     # Create the results folder:
 	if not os.path.isdir(results_path):
 		os.mkdir(results_path)
-	# results_path = os.path.join("results/", project_name+"/entropy")
 	results_path = "results/entropy"
 	if not os.path.isdir(results_path):
 		os.mkdir(results_path)
@@ -88,19 +87,21 @@ if __name__ == "__main__":
 	csv_header = ["time", "project_name", "input", "state_log_file_name"]
 	csv_rows = []
 	start_all = time.time()
+
+
 	#Running tests on instrumented version:
 	#Loop through .in files in inputs folder:
 	print("[    ] Running Tests and calculating entropies ", end='')
 	
 
-	# First, build nested dictionary of state frequencies
-	# first level of dictionary is the store instruction #s (i.e. each store instruction has its own state frequency dictionary)
-	# second level is the dictionary of the state frequencies of that store instructions
-	# additional 2 dictionaries: #out : frequencies of outputs; and #joint: joint frequencies of 
 
-	# A dictonary storing state frequencies for store #
+	# To calculate entropies, build nested dictionary of state frequencies
+	# first level of dictionary is the store instruction numbers (i.e. each store instruction has its own state frequency dictionary)
+	# second level is the observed output of that run (observed states are partitioned by output)
+	# third level is the dictionary of the state frequencies of that store instruction when that output is observed at the end.
+	# additional 2 dictionaries: #out : frequencies of outputs; and #all-states: states not specific to output
+	
 	program_state_frequencies = {}
-	# A dictionary storing for each store # the outputs it produces
 	out_frequencies = {}
 
 	# A counter to count # of inputs not skipped:
@@ -109,29 +110,10 @@ if __name__ == "__main__":
 	for in_file_name in sorted(os.listdir(in_dir), key=natsort):
 		if in_file_name.endswith(".in"):
 			try: 	
-				print("Now running shoco over file "+ in_file_name+"\n")
-				# print("Current size of program_state_frequencies: "+str(sys.getsizeof(program_state_frequencies))+" bytes.")	
-				# print("Current size of out_frequencies: "+str(sys.getsizeof(out_frequencies))+" bytes.")	
+				print("Now running "+project_name+" over file "+ in_file_name+"\n")
 				start = time.time()	
-				# test = f.read()
-				# print("\r[    ] Running Tests. Running test input "+test, end='')
-				# print("Instrumeted file path: "+ instrumented_file)
-				# RNAfold does not accept a full path for the output file
-				# out_file_name = os.path.join(in_dir,  in_file_name.split(".")[-2]+".out")
 				out_file_name = in_file_name.split(".")[-2]+".out"
-				p = subprocess.Popen(['lli', instrumented_file, os.path.join(in_dir, in_file_name), out_file_name], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
-				# Set timeout to one hour
-				out = p.communicate(timeout=1*60*60)
-				date_time = datetime.datetime.now().strftime('%b-%d-%I%M%p-%S-%f')
-				results_out_file_name = in_file_name.split('.')[0]+"_"+date_time
-
-				# print(p)
-				# out = p.communicate(input=(test+"\n").encode(encoding='UTF-8'))[0].decode("utf-8")
-				# out = p.communicate(input=(str(test)+"\n").encode(encoding='UTF-8'))[0]
-				# print("out: ")
-				# out = p.communicate()[0].decode("utf-8")
-				# print(out)
-				
+				execute_lli(instrumented_file, os.path.join(in_dir, in_file_name), out_file_name)				
 				
 				# Check that instrumentation output and run output both exist
 				if  os.path.exists('output.txt') and os.path.exists(out_file_name):
@@ -142,29 +124,22 @@ if __name__ == "__main__":
 						os.remove('output.txt')
 						os.remove(out_file_name)
 						continue
-					
+					date_time = datetime.datetime.now().strftime('%b-%d-%I%M%p-%S-%f')
+					results_out_file_name = in_file_name.split('.')[0]+"_"+date_time
 					shutil.copyfile(out_file_name, os.path.join(results_path,  results_out_file_name+"_out"))
 					shutil.move(out_file_name, os.path.join(in_dir,out_file_name))
 
 					print("Instrumentation output size:"+str(os.path.getsize('output.txt')/1024/1024/1024)+" GB.\n")
 					with open('output.txt', 'r') as f:
 						lines = f.read().strip().splitlines()
-						# out_line = lines[-1]
-						# if out_line == "":
-						# 	out_line = lines[-2]
 						with open(os.path.join(results_path, results_out_file_name+"_out"), 'rb') as o:
 							out_line = o.read()
-							# print("out line: "+out_line)
-
 							for line in lines:
 								if line == "" or line == out_line:
 									continue
-
 								store_num = line.split(',')[0] 
-
 								if store_num == "" :
 									continue
-
 								if store_num not in program_state_frequencies:
 									program_state_frequencies[store_num] = {}
 
@@ -173,18 +148,21 @@ if __name__ == "__main__":
 
 								program_state_frequencies[store_num][out_line][line] = program_state_frequencies[store_num][out_line].get(line, 0) + 1
 
-								if store_num not in out_frequencies:
-									out_frequencies[store_num] = {}
 
 								# To keep track of outputs and their frequencies only in runs that trigger that store inst
+
+								if store_num not in out_frequencies:
+									out_frequencies[store_num] = {}
 								out_frequencies[store_num][out_line] = out_frequencies[store_num].get(out_line, 0) + 1
 						
-					# TESTING: comment the next two line in order to keep the raw instrumentation output:
-					# Deleting them here in order to save space:
-					# Forgoing this step as it consumes too much disk space:
+
+					# TESTING: comment the next os.remove line in order to keep the raw instrumentation output.
+					# However be warned that it consumes too much disk space. Uncomment the shutil.move to keep all
+					# output.txt files:
 					# shutil.move('output.txt', os.path.join(results_path,  results_out_file_name))
 					os.remove('output.txt')
 					os.remove(os.path.join(results_path, results_out_file_name+'_out'))
+					
 					successful_inputs += 1
 
 
@@ -243,7 +221,7 @@ if __name__ == "__main__":
 	end_all = time.time()
 	elapsed_all = end_all - start_all
 
-	# TESTING (Warning, this generates very large files)
+	# TESTING A dump of the two dictionaries so far (Warning, this generates very large files)
 	# json.dump(program_state_frequencies, open(os.path.join(results_path,"program_state_frequencies.json"), 'w'))
 	# json.dump(out_frequencies, open(os.path.join(results_path,"out_frequencies.json"), 'w'))
 
@@ -267,12 +245,12 @@ if __name__ == "__main__":
 
 
 	# Calculate Entropy Metrics:
-	# Conditional Entropy, Normalized Entropy Loss, Squeeziness, Normalized Squeeziness
-
+	# Conditional Entropy, Squeeziness, Normalized Conditional Entropy, and Normalized Squeeziness
 	# Conditional entropy H(I | O) =  H(I,O) - H(O)
-	# Normalized Entropy Loss = [H(I,O) - H(O)] / H(I) ?
-	# Squeeziness = H(I) - H(O)
-	# Normalized Squeeziness = [H(I) -  H(O)] / H(I)
+	# Sequeeziness =  H(I) - H(O)
+	# Normalized Conditional entropy H(I | O) / H(I)
+	# Normalized Sequeeziness = [H(I) - H(O)] / H(I) ?
+
 
 
 	
@@ -346,7 +324,6 @@ if __name__ == "__main__":
 	ent_csv_header = ["project_name", "store#", "H(I)", "H(O)", "EL H(I)-H(O)", "norm_EL", "CE", "norm_CE", "instrumented_stores"]
 	ent_csv_rows = []
 
-
 	for store in program_state_frequencies:
 		entLoss[store] = in_entropies[store] - out_entropies[store]
 		if in_entropies[store] != 0:
@@ -356,6 +333,7 @@ if __name__ == "__main__":
 			normEntLoss[store] = math.inf
 			normCE[store] = math.inf
 		ent_csv_rows.append([project_name, store, in_entropies[store], out_entropies[store], entLoss[store], normEntLoss[store], cond_Entropies[store], normCE[store], instrumented_stores])
+	
 
 	# Check if entropies.csv exists:
 	first_time = True

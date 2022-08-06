@@ -49,6 +49,8 @@ COPY dataset/coreutils/lib/libc_nonshared.a ./src/bin/
 COPY dataset/coreutils/lib/libgmp.so ./src/bin/
 
 COPY llvm-passes/ ./llvm-passes
+COPY scripts/entropy_calculator.py ./scripts/
+COPY scripts/robustness_calculator.py ./scripts/
 RUN mkdir results
 
 WORKDIR /app/src/
@@ -84,7 +86,8 @@ WORKDIR /app/
 # # Nor does this:
 # # RUN ./scripts/conductor_factor.sh
 
-
+# python3 scripts/entropy_calculator.py src/bin/factor.ll src/factor/tests/uniform
+# python3 scripts/robustness_calculator.py src/bin/factor.ll src/factor/tests/uniform 
 
 
 # For testing:

@@ -71,7 +71,9 @@ RUN ./generate_lls.sh
 
 
 WORKDIR /app/src/expr/
-RUN clang -O0 -I../lib  -S -emit-llvm -c -o ../bin/expr.ll expr.c
+RUN clang -O0 -I../lib  -S -emit-llvm -c -o ../bin/tmp.ll expr.c
+RUN opt -O0 -indvars -loops -loop-simplify --loop-unroll -o ../bin/expr.ll tmp.ll
+RUN rm tmp.ll
 
 WORKDIR /app/src/bin/
 # RUN lli --extra-archive=libver.a --extra-archive=libcoreutils.a --extra-archive=libc_nonshared.a --dlopen=libgmp.so expr.ll
