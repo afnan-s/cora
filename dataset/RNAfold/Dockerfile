@@ -71,7 +71,7 @@ RUN ./generate_lls.sh
 # RUN mkdir RNAfold
 
 WORKDIR /app/src/RNAfold/
-RUN ./RNAfold_link.bat
+RUN ./compile_and_link_RNAfold.bat
 
 WORKDIR /app/
 

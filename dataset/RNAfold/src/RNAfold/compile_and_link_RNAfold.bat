@@ -1,6 +1,34 @@
-#Project	RNAfold from ViennaRNA-2.5.0.tar.gz $Revision: 1.00 $ 
-#W.B.Langdon 7 June 2022 based on llvm.make r1.7
+#WBL 27 Jul 2022 for Afnan
 #Afnan.Alsubaihin modified 6 Aug 2022 to add pre-optimizations
+
+
+echo "start by deleting all .ll"
+
+echo "try setenv LLVM_DIR /cs/sys/software2/llvm/llvm14/"
+$LLVM_DIR/bin/clang -v
+#if($status) exit $status
+
+
+setenv start `pwd`
+
+cd ViennaRNA
+#if($status) exit $status
+
+alias ViennaRNA_RNAfold ls
+
+rm *.ll */*.ll
+
+./compile.bat
+
+#if($status) exit $status
+
+cd $start
+#if($status) exit $status
+
+rm RNAfold.ll RNAfold_cmdl.ll input_id_helpers.ll special_const.ll
+
+make -f llvm.make
+
 
 
 llvm-link -S -o ../bin/tmp.ll	\
