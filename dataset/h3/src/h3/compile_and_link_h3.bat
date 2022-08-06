@@ -1,3 +1,4 @@
+mkdir -p lib
 clang -O0 -DBUILDING_H3=1 -DH3_PREFIX="" -Ih3-master/src/h3lib/include -Ih3-master/src/h3lib/include -Wall -std=gnu99 -S -emit-llvm -o lib/algos.ll -c h3-master/src/h3lib/lib/algos.c
 clang -O0 -DBUILDING_H3=1 -DH3_PREFIX="" -Ih3-master/src/h3lib/include -Ih3-master/src/h3lib/include -Wall -std=gnu99 -S -emit-llvm -o lib/coordijk.ll -c h3-master/src/h3lib/lib/coordijk.c
 clang -O0 -DBUILDING_H3=1 -DH3_PREFIX="" -Ih3-master/src/h3lib/include -Ih3-master/src/h3lib/include -Wall -std=gnu99 -S -emit-llvm -o lib/bbox.ll -c h3-master/src/h3lib/lib/bbox.c
