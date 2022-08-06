@@ -6,7 +6,7 @@ compile: gcc -g -o latlngolc latlngolc.c -lm
 
 */
 #include <stdio.h>
-#include "src/olc.c"
+#include "lib/olc.c"
 
 /*based on OLC_Encode*/
 void print_OLC_Encode(const double lat,
