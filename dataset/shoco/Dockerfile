@@ -41,6 +41,8 @@ WORKDIR /app/
 COPY dataset/shoco/src/ ./src
 COPY dataset/shoco/scripts/ ./scripts
 COPY llvm-passes/ ./llvm-passes
+COPY scripts/entropy_calculator.py ./scripts/
+COPY scripts/robustness_calculator.py ./scripts/
 RUN mkdir results
 
 WORKDIR /app/src/
@@ -63,7 +65,7 @@ RUN ./generate_lls.sh
 ######shoco#############
 
 WORKDIR /app/src/shoco/
-RUN ./ll_and_link.sh
+RUN ./compile_and_link_shoco.sh
 
 WORKDIR /app/
 

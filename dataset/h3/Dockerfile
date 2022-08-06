@@ -44,6 +44,8 @@ WORKDIR /app/
 COPY dataset/h3/src/ ./src
 COPY dataset/h3/scripts/ ./scripts
 COPY llvm-passes/ ./llvm-passes
+COPY scripts/entropy_calculator.py ./scripts/
+COPY scripts/robustness_calculator.py ./scripts/
 RUN mkdir results
 
 WORKDIR /app/src/
@@ -72,22 +74,13 @@ WORKDIR /app/src/h3/
 RUN ./compile_and_link_h3.bat
 
 
-WORKDIR /app/src/bin/
-# RUN lli --extra-archive=libver.a --extra-archive=libcoreutils.a --extra-archive=/usr/lib/x86_64-linux-gnu/libc_nonshared.a seq.ll 1 10
-
-
 WORKDIR /app/
-# RUN opt -O0 -load llvm-passes/build/libPerState.so -legacy-log-state  --verify-each --debugify --debugger-tune=lldb -S src/bin/seq.ll -o src/instrumented/seq.ll -enable-new-pm=0
-# RUN llvm-link -suppress-warnings src/instrumented/seq.ll llvm-passes/src/hashPrint.ll -S -o src/instrumented/seq.ll
-# RUN lli --extra-archive=src/bin/libver.a --extra-archive=src/bin/libcoreutils.a --extra-archive=/usr/lib/x86_64-linux-gnu/libc_nonshared.a  src/instrumented/seq.ll 1 10
+
+RUN python3 scripts/entropy_calculator.py src/bin/h3.ll src/h3/tests/uniform \
+&&  python3 scripts/robustness_calculator.py src/bin/h3.ll src/h3/tests/uniform 
 
 
 
-# RUN     python3 scripts/entropy_calculator_factor.py src/bin/factor.ll src/factor/tests/uniform #\
-    # &&  python3 scripts/robustness_calculator_factor.py src/bin/factor.ll src/factor/tests/uniform 
 
-
-
-RUN export LLVM_SYMBOLIZER_PATH='/usr/lib/llvm-13/bin/llvm-symbolizer'
 # For testing:
 CMD tail -f /dev/null

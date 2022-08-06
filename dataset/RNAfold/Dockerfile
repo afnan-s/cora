@@ -41,6 +41,8 @@ WORKDIR /app/
 COPY dataset/RNAfold/src/ ./src
 COPY dataset/RNAfold/scripts/ ./scripts
 COPY llvm-passes/ ./llvm-passes
+COPY scripts/entropy_calculator.py ./scripts/
+COPY scripts/robustness_calculator.py ./scripts/
 RUN mkdir results
 
 WORKDIR /app/src/

@@ -50,6 +50,8 @@ COPY dataset/coreutils/lib/libc_nonshared.a ./src/bin/
 COPY dataset/coreutils/lib/libgmp.so ./src/bin/
 
 COPY llvm-passes/ ./llvm-passes
+COPY scripts/entropy_calculator.py ./scripts/
+COPY scripts/robustness_calculator.py ./scripts/
 RUN mkdir results
 
 WORKDIR /app/src/
@@ -72,17 +74,16 @@ RUN ./generate_lls.sh
 
 WORKDIR /app/src/expr/
 RUN clang -O0 -I../lib  -S -emit-llvm -c -o ../bin/tmp.ll expr.c
-RUN opt -O0 -indvars -loops -loop-simplify --loop-unroll -o ../bin/expr.ll tmp.ll
-RUN rm tmp.ll
+RUN opt -O0 -indvars -loops -loop-simplify --loop-unroll -o ../bin/expr.ll ../bin/tmp.ll
+RUN rm ../bin/tmp.ll
 
 WORKDIR /app/src/bin/
 # RUN lli --extra-archive=libver.a --extra-archive=libcoreutils.a --extra-archive=libc_nonshared.a --dlopen=libgmp.so expr.ll
 WORKDIR /app/
 
 
-RUN     python3 scripts/entropy_calculator_expr.py src/bin/expr.ll src/expr/tests/uniform 
-#\
-    # &&  python3 scripts/robustness_calculator_expr.py src/bin/expr.ll src/expr/tests/uniform 
+# This does not work. Need to run container first, then run in bash:
+# RUN     python3 scripts/entropy_calculator.py src/bin/expr.ll src/expr/tests/uniform &&  python3 scripts/robustness_calculator.py src/bin/expr.ll src/expr/tests/uniform 
 
 
 

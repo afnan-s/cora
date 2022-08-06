@@ -72,9 +72,9 @@ RUN ./generate_lls.sh
 
 
 WORKDIR /app/src/factor/
-RUN clang -O0  -I../lib  -S -emit-llvm -c -o tmp.ll factor.c
-RUN opt -O0 -indvars -loops -loop-simplify --loop-unroll -o ../bin/factor.ll tmp.ll
-RUN rm tmp.ll
+RUN clang -O0  -I../lib  -S -emit-llvm -c -o ../bin/tmp.ll factor.c
+RUN opt -O0 -indvars -loops -loop-simplify --loop-unroll -o ../bin/factor.ll ../bin/tmp.ll
+RUN rm ../bin/tmp.ll
 
 WORKDIR /app/src/bin/
 # RUN lli --extra-archive=libver.a --extra-archive=libcoreutils.a --extra-archive=libc_nonshared.a --dlopen=libgmp.so factor.ll
@@ -86,8 +86,7 @@ WORKDIR /app/
 # # Nor does this:
 # # RUN ./scripts/conductor_factor.sh
 
-# python3 scripts/entropy_calculator.py src/bin/factor.ll src/factor/tests/uniform
-# python3 scripts/robustness_calculator.py src/bin/factor.ll src/factor/tests/uniform 
+# python3 scripts/entropy_calculator.py src/bin/factor.ll src/factor/tests/uniform && python3 scripts/robustness_calculator.py src/bin/factor.ll src/factor/tests/uniform 
 
 
 # For testing:

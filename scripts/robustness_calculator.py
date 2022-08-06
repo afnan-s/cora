@@ -20,7 +20,7 @@ natsort = lambda s: [int(t) if t.isdigit() else t.lower() for t in re.split('(\d
 # Parameters
 
 # Number of perturbed variants of the SUT
-variants = 2
+variants = 100
 
 # Number of runs per input per variant
 runs = 1

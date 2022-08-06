@@ -170,7 +170,7 @@ if __name__ == "__main__":
 					print("Error: 'output.txt' (raw instrumentation output file) or '"+out_file_name+"'  was not found!\n")
 					if os.path.exists('output.txt'):
 						os.remove('output.txt')
-					if os.path.exists(os.path.join(results_path, results_out_file_name+'_out')):
+					if 'results_out_file_name' in locals() and os.path.exists(os.path.join(results_path, results_out_file_name+'_out')):
 						os.remove(os.path.join(results_path, results_out_file_name+'_out'))
 					if os.path.exists(os.path.join(in_dir,out_file_name)):
 						os.remove(os.path.join(in_dir,out_file_name))
