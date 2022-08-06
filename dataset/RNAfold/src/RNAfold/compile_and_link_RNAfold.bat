@@ -1,29 +1,14 @@
 #WBL 27 Jul 2022 for Afnan
-#Afnan.Alsubaihin modified 6 Aug 2022 to add pre-optimizations
-
-
-#echo "start by deleting all .ll"
-
-#echo "try setenv LLVM_DIR /cs/sys/software2/llvm/llvm14/"
-#$LLVM_DIR/bin/clang -v
-#if($status) exit $status
+#Afnan.Alsubaihin modified 6 Aug 2022 to add pre-optimizations. Made less verbose. Removed .ll deletion. Added CFLAGS (in llvm.make): -O0 and -w
 
 
 cd ViennaRNA
-#if($status) exit $status
 
-#alias ViennaRNA_RNAfold=ls
-
-#rm *.ll */*.ll
 
 ./compile.bat
 
-#if($status) exit $status
 
 cd ..
-#if($status) exit $status
-
-#rm RNAfold.ll RNAfold_cmdl.ll input_id_helpers.ll special_const.ll
 
 make -f llvm.make
 

@@ -62,43 +62,15 @@ RUN ./generate_lls.sh
 
 
 
-######RNAfold#############
-# # TODO: Run script to generate RNAfold .ll files
-# # WORKDIR /app/dataset/large/RNAfold/ViennaRNA
-# # RUN ./compile.bat
-
-# WORKDIR /app/src/bin
-# RUN mkdir RNAfold
-
 WORKDIR /app/src/RNAfold/
 RUN ./compile_and_link_RNAfold.bat
 
 WORKDIR /app/
 
-# RUN ./scripts/conductor_RNAfold.sh; 
-# OR ##
-RUN     python3 scripts/entropy_calculator_RNAfold.py src/bin/RNAfold.ll src/RNAfold/tests/uniform \
-    &&  python3 scripts/robustness_calculator_RNAfold.py src/bin/RNAfold.ll src/RNAfold/tests/uniform 
 
+RUN     python3 scripts/entropy_calculator.py src/bin/RNAfold.ll src/RNAfold/tests/uniform \
+    &&  python3 scripts/robustness_calculator.py src/bin/RNAfold.ll src/RNAfold/tests/uniform 
 
-# # ######gzip#############
-
-# WORKDIR /app/dataset/bin
-# RUN mkdir gzip
-
-# WORKDIR /app/dataset/src/gzip
-# RUN ./configure
-# RUN make
-# RUN ./clang_gzip_lib.bat
-# RUN ./clang_gzip.bat
-# RUN ./link_and_run_gzip.bat 
-# RUN cp /app/dataset/src/gzip/tmp/gzip.ll /app/dataset/bin/gzip/gzip.ll
-
-
-# WORKDIR /app/
-
-
-# RUN ./scripts/conductor_gzip.sh; 
 
 
 # For testing:

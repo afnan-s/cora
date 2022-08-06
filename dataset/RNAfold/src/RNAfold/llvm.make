@@ -1,30 +1,9 @@
-#Project	RNAfold from ViennaRNA-2.5.0.tar.gz $Revision: 1.7 $ 
-# 		Use LLVM 14
-# setenv LLVM_DIR /cs/sys/software2/llvm/llvm14/
-#LLVM_DIR = /cs/sys/software2/llvm/llvm14/
-#
+#Project	RNAfold from ViennaRNA-2.5.0.tar.gz $Revision: 1.7 $
 #	    
 #Author		W.B.Langdon
 #
 #Created	2022
-#
-#Modifications:
-#WBL  7 Apr 2022 bugfix add HAVE_CONFIG_H
-#   llvm bit-code does not help
-#   Use clang. Tidy, need gcc link stuff?
-#   setenv LLVM_DIR /cs/sys/software2/llvm/llvm14/ before using
-#WBL  5 Apr 2022 Replace .o with .ll
-#WBL 16 Mar 2022 Replace LIBTOOL link with simpl gcc to .o in subdirectories
-#WBL 15 Mar 2022 after copy_files.bat r1.8 CINC .h files
 
-#Notes: files set up 10 Mar when ViennaRNA-2.5.0.tar.gz was unpacked on eden
-#	Makefile (many)
-#	config.h 
-#	hidden.a files oops/ViennaRNA-2.5.0/src/ViennaRNA/.libs/libRNA_special_const.a
-#
-#Based in part on:
-#oops/ViennaRNA-2.5.0/Makefile
-#oops/ViennaRNA-2.5.0/src/bin/Makefile
 
 
 NAME 	= RNAfold_all.ll
@@ -109,7 +88,7 @@ RNAfold_LDADD = \
 
 CC 	= clang
 #NB generate .ll without any optimisation
-CFLAGS 	= -O0 -S -emit-llvm
+CFLAGS 	= -O0 -S -emit-llvm -w
 CFLAGS	+= -ferror-limit=1
 COMPILE = $(CC) -c $(CFLAGS)
 CFLAGS	+= -DHAVE_CONFIG_H #use config.h
