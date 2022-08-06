@@ -107,7 +107,7 @@ SVM_LIBS = -lstdc++
 RNAfold_LDADD = \
     $(MPFR_LIBS) $(SVM_LIBS)
 
-CC 	= $(LLVM_DIR)/bin/clang
+CC 	= clang
 #NB generate .ll without any optimisation
 CFLAGS 	= -O0 -S -emit-llvm
 CFLAGS	+= -ferror-limit=1
@@ -115,7 +115,7 @@ COMPILE = $(CC) -c $(CFLAGS)
 CFLAGS	+= -DHAVE_CONFIG_H #use config.h
 CINC  += -I.
 
-LINK 	= $(LLVM_DIR)/bin/llvm-link -S -o
+LINK 	= llvm-link -S -o
 
 #https://stackoverflow.com/questions/1662909/undefined-reference-to-pthread-create-in-linux
 #$(top_builddir)/libtool is nasty wrapper that just uses gcc (or whatever) linker

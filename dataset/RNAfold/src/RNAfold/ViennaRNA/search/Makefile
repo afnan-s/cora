@@ -2,7 +2,7 @@
 NAME	= ViennaRNA_RNAfold
 
 #LLVM_DIR = /cs/sys/software2/llvm/llvm14/
-CC	= $(LLVM_DIR)/bin/clang
+CC	= clang
 CFLAGS	= -O0 -S -emit-llvm
 #CFLAGS	+= -x c
 CFLAGS	+= -ferror-limit=1
