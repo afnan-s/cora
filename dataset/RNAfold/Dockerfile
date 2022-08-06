@@ -77,8 +77,8 @@ WORKDIR /app/
 
 # RUN ./scripts/conductor_RNAfold.sh; 
 # OR ##
-RUN     python3 scripts/entropy_calculator_RNAfold.py src/bin/RNAfold.ll src/RNAfold/tests/uniform_10_to_30 \
-    &&  python3 scripts/robustness_calculator_RNAfold.py src/bin/RNAfold.ll src/RNAfold/tests/uniform_10_to_30 
+RUN     python3 scripts/entropy_calculator_RNAfold.py src/bin/RNAfold.ll src/RNAfold/tests/uniform \
+    &&  python3 scripts/robustness_calculator_RNAfold.py src/bin/RNAfold.ll src/RNAfold/tests/uniform 
 
 
 # # ######gzip#############
