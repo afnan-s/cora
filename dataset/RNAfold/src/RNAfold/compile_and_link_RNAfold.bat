@@ -14,7 +14,7 @@
 cd ViennaRNA
 #if($status) exit $status
 
-#alias ViennaRNA_RNAfold ls
+alias ViennaRNA_RNAfold="ls"
 
 #rm *.ll */*.ll
 
