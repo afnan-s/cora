@@ -109,7 +109,7 @@ RNAfold_LDADD = \
 
 CC 	= $(LLVM_DIR)/bin/clang
 #NB generate .ll without any optimisation
-CFLAGS 	= -S -emit-llvm
+CFLAGS 	= -O0 -S -emit-llvm
 CFLAGS	+= -ferror-limit=1
 COMPILE = $(CC) -c $(CFLAGS)
 CFLAGS	+= -DHAVE_CONFIG_H #use config.h
