@@ -1,8 +1,9 @@
 #Project	RNAfold from ViennaRNA-2.5.0.tar.gz $Revision: 1.00 $ 
 #W.B.Langdon 7 June 2022 based on llvm.make r1.7
+#Afnan.Alsubaihin modified 6 Aug 2022 to add pre-optimizations
 
 
-llvm-link -S -o ../bin/RNAfold.ll	\
+llvm-link -S -o ../bin/tmp.ll	\
   RNAfold.ll	\
   RNAfold_cmdl.ll	\
   input_id_helpers.ll	\
@@ -76,4 +77,5 @@ llvm-link -S -o ../bin/RNAfold.ll	\
   ViennaRNA/utils/utils.ll	\
   ViennaRNA/zscore.ll
 
-#
+opt -O0 -indvars -loops -loop-simplify --loop-unroll -o ../bin/RNAfold.ll ../bin/tmp.ll
+rm ../bin/tmp.ll
