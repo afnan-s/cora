@@ -71,7 +71,6 @@ RUN ./generate_lls.sh
 # RUN mkdir RNAfold
 
 WORKDIR /app/src/RNAfold/
-RUN alias ViennaRNA_RNAfold="ls"
 RUN ./compile_and_link_RNAfold.bat
 
 WORKDIR /app/

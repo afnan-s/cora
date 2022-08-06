@@ -1,6 +1,6 @@
 #gcc_m2.awk Revision: 1.30 ../../ .ll 07 Apr 2022
-NAME	= ViennaRNA_RNAfold
-
+#NAME	= ViennaRNA_RNAfold
+NAME	= ls
 #LLVM_DIR = /cs/sys/software2/llvm/llvm14/
 CC	= clang
 CFLAGS	= -O0 -S -emit-llvm
