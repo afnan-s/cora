@@ -2,30 +2,30 @@
 #Afnan.Alsubaihin modified 6 Aug 2022 to add pre-optimizations
 
 
-echo "start by deleting all .ll"
+#echo "start by deleting all .ll"
 
-echo "try setenv LLVM_DIR /cs/sys/software2/llvm/llvm14/"
-$LLVM_DIR/bin/clang -v
+#echo "try setenv LLVM_DIR /cs/sys/software2/llvm/llvm14/"
+#$LLVM_DIR/bin/clang -v
 #if($status) exit $status
 
 
-setenv start `pwd`
+#setenv start `pwd`
 
 cd ViennaRNA
 #if($status) exit $status
 
-alias ViennaRNA_RNAfold ls
+#alias ViennaRNA_RNAfold ls
 
-rm *.ll */*.ll
+#rm *.ll */*.ll
 
 ./compile.bat
 
 #if($status) exit $status
 
-cd $start
+cd ..
 #if($status) exit $status
 
-rm RNAfold.ll RNAfold_cmdl.ll input_id_helpers.ll special_const.ll
+#rm RNAfold.ll RNAfold_cmdl.ll input_id_helpers.ll special_const.ll
 
 make -f llvm.make
 
