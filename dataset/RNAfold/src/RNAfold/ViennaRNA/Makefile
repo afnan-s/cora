@@ -12,7 +12,7 @@ CFLAGS	+= -DHAVE_CONFIG_H #use config.h
 CINC	+= -I../
 CINC	+= -I.#special for zscore.c's <svm.h>
 
-OBJS	=  alphabet.ll boltzmann_sampling.ll bs_wrappers.ll centroid.ll combinatorics.ll commands.ll dp_matrices.ll equilibrium_probs.ll eval.ll eval_wrappers.ll fold_compound.ll gquad.ll grammar.ll MEA.ll mfe.ll mfe_wrappers.ll mm.ll model.ll part_func.ll pf_fold.ll pf_multifold.ll ribo.ll sequence.ll ugly_bt.ll unstructured_domains.ll zscore.ll svm_.ll
+OBJS	=  alphabet.ll boltzmann_sampling.ll bs_wrappers.ll centroid.ll combinatorics.ll commands.ll dp_matrices.ll equilibrium_probs.ll eval.ll eval_wrappers.ll fold_compound.ll gquad.ll grammar.ll MEA.ll mfe.ll mfe_wrappers.ll mm.ll model.ll part_func.ll pf_fold.ll pf_multifold.ll ribo.ll sequence.ll ugly_bt.ll unstructured_domains.ll zscore.ll svm.ll
 
 $(NAME):$(OBJS)
 	$(LINK) $(NAME) $(LDFLAGS) $(OBJS) $(LIBS)
@@ -195,6 +195,6 @@ unstructured_domains.ll:	 unstructured_domains.c utils/basic.h datastructures/ba
 zscore.ll:	 zscore.c config.h utils/basic.h datastructures/basic.h params/constants.h fold_compound.h model.h params/basic.h sequence.h dp_matrices.h constraints/hard.h constraints/basic.h constraints/soft.h grammar.h structured_domains.h unstructured_domains.h utils/structures.h zscore.h utils/svm.h zscore_dat.inc
 	$(COMPILE) $(CINC) zscore.c
 
-svm_.ll:	 svm.cpp svm.h
+svm.ll:	 svm.cpp svm.h
 	$(COMPILE) $(CINC) svm.cpp
 

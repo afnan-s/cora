@@ -93,7 +93,7 @@ llvm-link -S -o ../bin/tmp.ll	\
   ViennaRNA/ribo.ll	\
   ViennaRNA/search/BoyerMoore.ll	\
   ViennaRNA/sequence.ll	\
-  ViennaRNA/svm_.ll	\
+  ViennaRNA/svm.ll	\
   ViennaRNA/ugly_bt.ll	\
   ViennaRNA/unstructured_domains.ll	\
   ViennaRNA/utils/cpu.ll	\
