@@ -9,8 +9,6 @@
 #if($status) exit $status
 
 
-#setenv start `pwd`
-
 cd ViennaRNA
 #if($status) exit $status
 
