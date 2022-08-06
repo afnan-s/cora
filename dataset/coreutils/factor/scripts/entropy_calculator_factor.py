@@ -186,12 +186,14 @@ if __name__ == "__main__":
 
 								program_state_frequencies[store_num][out_line][line] = program_state_frequencies[store_num][out_line].get(line, 0) + 1
 
-								if store_num not in out_frequencies:
-									out_frequencies[store_num] = {}
 
 								# To keep track of outputs and their frequencies only in runs that trigger that store inst
+
+								if store_num not in out_frequencies:
+									out_frequencies[store_num] = {}
 								out_frequencies[store_num][out_line] = out_frequencies[store_num].get(out_line, 0) + 1
 						
+
 					# TESTING: comment the next two line in order to keep the raw instrumentation output:
 					# Deleting them here in order to save space:
 					# Forgoing this step as it consumes too much disk space:
@@ -358,7 +360,6 @@ if __name__ == "__main__":
 	# Define entropies.csv header and contents
 	ent_csv_header = ["project_name", "store#", "H(I)", "H(O)", "EL H(I)-H(O)", "norm_EL", "CE", "norm_CE", "instrumented_stores"]
 	ent_csv_rows = []
-
 
 	for store in program_state_frequencies:
 		entLoss[store] = in_entropies[store] - out_entropies[store]

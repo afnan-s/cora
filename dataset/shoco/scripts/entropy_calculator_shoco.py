@@ -65,6 +65,8 @@ if __name__ == "__main__":
 		print("Error: opt command exited with code "+str(result1.returncode))
 		print(result1)
 		quit()
+
+	instrumented_stores = int(result1.stderr.strip())
 	
 	result2 = subprocess.run(['llvm-link', '-suppress-warnings', instrumented_file, hash_function_path, '-S', '-o', instrumented_file], stdout=subprocess.PIPE)
 	if result2.returncode != 0:
