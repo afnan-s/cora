@@ -70,8 +70,8 @@ RUN ./compile_and_link_shoco.sh
 WORKDIR /app/
 
 # OR ##
-RUN     python3 scripts/entropy_calculator_shoco.py src/bin/shoco.ll src/shoco/tests/uniform \
-    &&  python3 scripts/robustness_calculator_shoco.py src/bin/shoco.ll src/shoco/tests/uniform 
+# RUN     python3 scripts/entropy_calculator_shoco.py src/bin/shoco.ll src/shoco/tests/uniform \
+#     &&  python3 scripts/robustness_calculator_shoco.py src/bin/shoco.ll src/shoco/tests/uniform 
 
 
 

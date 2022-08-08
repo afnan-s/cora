@@ -68,8 +68,8 @@ RUN ./compile_and_link_RNAfold.bat
 WORKDIR /app/
 
 
-RUN     python3 scripts/entropy_calculator.py src/bin/RNAfold.ll src/RNAfold/tests/uniform \
-    &&  python3 scripts/robustness_calculator.py src/bin/RNAfold.ll src/RNAfold/tests/uniform 
+# RUN     python3 scripts/entropy_calculator.py src/bin/RNAfold.ll src/RNAfold/tests/uniform \
+#     &&  python3 scripts/robustness_calculator.py src/bin/RNAfold.ll src/RNAfold/tests/uniform 
 
 
 
