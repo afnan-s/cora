@@ -20,7 +20,7 @@ natsort = lambda s: [int(t) if t.isdigit() else t.lower() for t in re.split('(\d
 # Parameters
 
 # Number of perturbed variants of the SUT
-variants = 100
+variants = 500
 
 # Number of runs per input per variant
 runs = 1
@@ -29,7 +29,7 @@ runs = 1
 mode = "seq"
 
 # After how many trials should the script give up trying to generate unique variants
-giveup = 100
+giveup = 1000
 
 experiment_setup = "{'num_runs': "+str(runs)+", 'mode': "+mode+", "
 
@@ -143,7 +143,7 @@ if __name__ == "__main__":
 	print("[    ] Running tests ", end='')
 	total_runs = 0
 	for variant_file_name in os.listdir(perturbed_path):
-
+		problematic_variant = False
 		print("\r[    ] Running tests on variant "+variant_file_name+".", end='')
 
 		# Variant statistics:
@@ -156,8 +156,10 @@ if __name__ == "__main__":
 
 		# Loop through .in files in inputs folder:
 
+		
 		for in_file_name in sorted(os.listdir(in_dir), key=natsort):
-
+			if problematic_variant:
+				break
 			if in_file_name.endswith(".in"):
 
 				correct_out_file_name = os.path.join(in_dir,os.path.splitext(in_file_name)[0]+".out")
@@ -172,8 +174,17 @@ if __name__ == "__main__":
 
 				for j in range(runs):
 
-					execute_lli(os.path.join(perturbed_path, variant_file_name), os.path.join(in_dir, in_file_name), perturbed_out_file_name)
-
+					try:
+						execute_lli(os.path.join(perturbed_path, variant_file_name), os.path.join(in_dir, in_file_name), perturbed_out_file_name)
+					except subprocess.TimeoutExpired as te:
+						if os.path.isfile("perturbation_executed.txt"):
+							os.remove("perturbation_executed.txt")
+						if os.path.exists(perturbed_out_file_name):
+							os.remove(perturbed_out_file_name)
+						# Most likely, this variant has a problem (e.g. perturbed loop counter or stopping codition.)
+						# so to save time, skip testing this variant entirely:
+						problematic_variant = True
+						break
 					# Check whether the run produced the output file:
 					if not os.path.exists(perturbed_out_file_name):
 						print("\nRun did not produce an output file! output of lli command: ")
