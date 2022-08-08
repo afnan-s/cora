@@ -79,8 +79,8 @@ RUN ./compile_and_link_olc.bat
 
 WORKDIR /app/
 
-RUN python3 scripts/entropy_calculator.py src/bin/olc.ll src/olc/tests/uniform \
-&&  python3 scripts/robustness_calculator.py src/bin/olc.ll src/olc/tests/uniform 
+# RUN python3 scripts/entropy_calculator.py src/bin/olc.ll src/olc/tests/uniform \
+# &&  python3 scripts/robustness_calculator.py src/bin/olc.ll src/olc/tests/uniform 
 
 
 
