@@ -187,8 +187,7 @@ if __name__ == "__main__":
 						break
 					# Check whether the run produced the output file:
 					if not os.path.exists(perturbed_out_file_name):
-						print("\nRun did not produce an output file! output of lli command: ")
-						print(out)
+						print("\nRun did not produce an output file!")
 						if os.path.isfile("perturbation_executed.txt"):
 							os.remove("perturbation_executed.txt")
 						continue
