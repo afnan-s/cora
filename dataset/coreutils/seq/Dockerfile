@@ -51,6 +51,8 @@ COPY dataset/coreutils/lib/libc_nonshared.a ./src/bin/
 COPY dataset/coreutils/lib/libgmp.so ./src/bin/
 
 COPY llvm-passes/ ./llvm-passes
+COPY scripts/entropy_calculator.py ./scripts/
+COPY scripts/robustness_calculator.py ./scripts/
 RUN mkdir results
 
 WORKDIR /app/src/
@@ -74,7 +76,11 @@ RUN ./generate_lls.sh
 WORKDIR /app/src/seq/
 # If on ubuntu:
 # ln -s /usr/include/locale.h /usr/include/xlocale.h
-# RUN clang -O0 -indvars -loops -loop-simplify --loop-unroll -I../lib -I/usr/lib  -S -emit-llvm -c -o ../bin/seq.ll seq.c
+RUN clang -O0  -I../lib  -S -emit-llvm -c -o ../bin/tmp.ll seq.c
+RUN opt -O0 -indvars -loops -loop-simplify --loop-unroll -o ../bin/seq.ll ../bin/tmp.ll
+RUN rm ../bin/tmp.ll
+
+
 
 WORKDIR /app/src/bin/
 # RUN lli --extra-archive=libver.a --extra-archive=libcoreutils.a --extra-archive=/usr/lib/x86_64-linux-gnu/libc_nonshared.a seq.ll 1 10
@@ -87,11 +93,11 @@ WORKDIR /app/
 
 
 
-# RUN     python3 scripts/entropy_calculator_factor.py src/bin/factor.ll src/factor/tests/uniform #\
-    # &&  python3 scripts/robustness_calculator_factor.py src/bin/factor.ll src/factor/tests/uniform 
+# RUN     python3 scripts/entropy_calculator.py src/bin/factor.ll src/seq/tests/uniform #\
+    # &&  python3 scripts/robustness_calculator.py src/bin/factor.ll src/seq/tests/uniform 
 
 
 
-RUN export LLVM_SYMBOLIZER_PATH='/usr/lib/llvm-13/bin/llvm-symbolizer'
+# RUN export LLVM_SYMBOLIZER_PATH='/usr/lib/llvm-13/bin/llvm-symbolizer'
 # For testing:
 CMD tail -f /dev/null
