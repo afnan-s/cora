@@ -25,7 +25,7 @@ variants = 500
 # Number of runs per input per variant
 runs = 1
 
-# Perturbation mode ('bit': random bit flip. 'Seq': random bit sequence)
+# Perturbation mode ('bit': random bit flip. 'seq': random bit sequence)
 mode = "seq"
 
 # After how many trials should the script give up trying to generate unique variants
@@ -80,7 +80,7 @@ if __name__ == "__main__":
 	#Generating the instrumented version of the SUT
 	print("[    ] Generating perturbed variants..", end='')
 
-	# Create a directory in dataset/ds-perturbed:
+	# Create a directory in dataset/perturbed:
 	# If a folder already exists, remove it and its contents
 	# this is to prevent clash with differently linked variants
 	if os.path.isdir(perturbed_path):

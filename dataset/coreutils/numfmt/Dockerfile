@@ -1,5 +1,5 @@
 FROM docker.io/library/debian:stretch
-# FROM docker.io/library/ubuntu:latest
+
 
 RUN apt-get update && \
     apt-get install -y git \
@@ -31,8 +31,6 @@ RUN update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-13 1
 RUN update-alternatives --install /usr/bin/lli lli /usr/bin/lli-13 10
 RUN update-alternatives --install /usr/bin/llvm-link llvm-link /usr/bin/llvm-link-13 10
 RUN update-alternatives --install /usr/bin/opt opt /usr/bin/opt-13 10
-RUN update-alternatives --install /usr/bin/opt opt /usr/bin/opt-13 10
-RUN update-alternatives --install /usr/bin/lldb lldb /usr/lib/llvm-13/bin/lldb 10
 RUN export CXX=/usr/bin/clang++-13 
 RUN export CC=/usr/bin/clang-13
 RUN export LDFLAGS="-L/lib"
@@ -41,8 +39,8 @@ RUN export LDFLAGS="-L/lib"
 WORKDIR /app/
 
 
-COPY dataset/coreutils/seq/src/ ./src
-COPY dataset/coreutils/seq/scripts/ ./scripts
+COPY dataset/coreutils/factor/src/ ./src
+COPY dataset/coreutils/factor/scripts/ ./scripts
 COPY dataset/coreutils/lib ./src/lib
 
 COPY dataset/coreutils/lib/libver.a ./src/bin/
@@ -73,30 +71,23 @@ RUN ./generate_lls.sh
 
 
 
-WORKDIR /app/src/seq/
-# If on ubuntu:
-# ln -s /usr/include/locale.h /usr/include/xlocale.h
-RUN clang -O0  -I../lib  -S -emit-llvm -c -o ../bin/tmp.ll seq.c
-RUN opt -O0 -indvars -loops -loop-simplify --loop-unroll -o ../bin/seq.ll ../bin/tmp.ll
+WORKDIR /app/src/factor/
+RUN clang -O0  -I../lib  -S -emit-llvm -c -o ../bin/tmp.ll factor.c
+RUN opt -O0 -indvars -loops -loop-simplify --loop-unroll -o ../bin/factor.ll ../bin/tmp.ll
 RUN rm ../bin/tmp.ll
 
-
-
 WORKDIR /app/src/bin/
-# RUN lli --extra-archive=libver.a --extra-archive=libcoreutils.a --extra-archive=/usr/lib/x86_64-linux-gnu/libc_nonshared.a seq.ll 1 10
-
-
+# RUN lli --extra-archive=libver.a --extra-archive=libcoreutils.a --extra-archive=libc_nonshared.a --dlopen=libgmp.so factor.ll
 WORKDIR /app/
-# RUN opt -O0 -load llvm-passes/build/libPerState.so -legacy-log-state  --verify-each --debugify --debugger-tune=lldb -S src/bin/seq.ll -o src/instrumented/seq.ll -enable-new-pm=0
-# RUN llvm-link -suppress-warnings src/instrumented/seq.ll llvm-passes/src/hashPrint.ll -S -o src/instrumented/seq.ll
-# RUN lli --extra-archive=src/bin/libver.a --extra-archive=src/bin/libcoreutils.a --extra-archive=/usr/lib/x86_64-linux-gnu/libc_nonshared.a  src/instrumented/seq.ll 1 10
+
+# This does not work (produces empty output files.)
+# RUN python3 scripts/entropy_calculator_factor.py src/bin/factor.ll src/factor/tests/uniform \
+# &&  python3 scripts/robustness_calculator_factor.py src/bin/factor.ll src/factor/tests/uniform 
+# # Nor does this:
+# # RUN ./scripts/conductor_factor.sh
+
+# python3 scripts/entropy_calculator.py src/bin/factor.ll src/factor/tests/uniform && python3 scripts/robustness_calculator.py src/bin/factor.ll src/factor/tests/uniform 
 
 
-
-# RUN     python3 scripts/entropy_calculator.py src/bin/seq.ll src/seq/tests/uniform &&  python3 scripts/robustness_calculator.py src/bin/seq.ll src/seq/tests/uniform 
-
-
-
-# RUN export LLVM_SYMBOLIZER_PATH='/usr/lib/llvm-13/bin/llvm-symbolizer'
 # For testing:
 CMD tail -f /dev/null
