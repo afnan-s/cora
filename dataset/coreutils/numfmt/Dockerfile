@@ -73,8 +73,10 @@ RUN ./generate_lls.sh
 
 WORKDIR /app/src/numfmt/
 RUN clang -O0  -I../lib  -S -emit-llvm -c -o ../bin/tmp.ll numfmt.c
-RUN opt -O0 -indvars -loops -loop-simplify --loop-unroll -o ../bin/numfmt.ll ../bin/tmp.ll
-RUN rm ../bin/tmp.ll
+RUN clang -O0  -I../lib  -S -emit-llvm -c -o ../bin/tmp2.ll set-fields.c
+RUN llvm-link -S -o ../bin/tmp_linked.ll ../bin/tmp.ll ../bin/tmp2.ll 
+RUN opt -O0 -indvars -loops -loop-simplify --loop-unroll -o ../bin/numfmt.ll ../bin/tmp_linked.ll
+RUN rm ../bin/tmp.ll ../bin/tmp2.ll ../bin/tmp_linked.ll
 
 WORKDIR /app/src/bin/
 # RUN lli --extra-archive=libver.a --extra-archive=libcoreutils.a --extra-archive=libc_nonshared.a --dlopen=libgmp.so factor.ll
