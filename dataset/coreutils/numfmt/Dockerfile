@@ -39,8 +39,8 @@ RUN export LDFLAGS="-L/lib"
 WORKDIR /app/
 
 
-COPY dataset/coreutils/factor/src/ ./src
-COPY dataset/coreutils/factor/scripts/ ./scripts
+COPY dataset/coreutils/numfmt/src/ ./src
+COPY dataset/coreutils/numfmt/scripts/ ./scripts
 COPY dataset/coreutils/lib ./src/lib
 
 COPY dataset/coreutils/lib/libver.a ./src/bin/
@@ -71,9 +71,9 @@ RUN ./generate_lls.sh
 
 
 
-WORKDIR /app/src/factor/
-RUN clang -O0  -I../lib  -S -emit-llvm -c -o ../bin/tmp.ll factor.c
-RUN opt -O0 -indvars -loops -loop-simplify --loop-unroll -o ../bin/factor.ll ../bin/tmp.ll
+WORKDIR /app/src/numfmt/
+RUN clang -O0  -I../lib  -S -emit-llvm -c -o ../bin/tmp.ll numfmt.c
+RUN opt -O0 -indvars -loops -loop-simplify --loop-unroll -o ../bin/numfmt.ll ../bin/tmp.ll
 RUN rm ../bin/tmp.ll
 
 WORKDIR /app/src/bin/
@@ -81,13 +81,8 @@ WORKDIR /app/src/bin/
 WORKDIR /app/
 
 # This does not work (produces empty output files.)
-# RUN python3 scripts/entropy_calculator_factor.py src/bin/factor.ll src/factor/tests/uniform \
-# &&  python3 scripts/robustness_calculator_factor.py src/bin/factor.ll src/factor/tests/uniform 
-# # Nor does this:
-# # RUN ./scripts/conductor_factor.sh
-
-# python3 scripts/entropy_calculator.py src/bin/factor.ll src/factor/tests/uniform && python3 scripts/robustness_calculator.py src/bin/factor.ll src/factor/tests/uniform 
-
+# RUN python3 scripts/entropy_calculator.py src/bin/numfmt.ll src/numfmt/tests/uniform && python3 scripts/robustness_calculator.py src/bin/numfmt.ll src/numfmt/tests/uniform 
+# Need to run it within the container's bash
 
 # For testing:
 CMD tail -f /dev/null

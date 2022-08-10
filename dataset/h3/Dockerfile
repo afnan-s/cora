@@ -76,8 +76,7 @@ RUN ./compile_and_link_h3.bat
 
 WORKDIR /app/
 
-RUN python3 scripts/entropy_calculator.py src/bin/h3.ll src/h3/tests/uniform \
-&&  python3 scripts/robustness_calculator.py src/bin/h3.ll src/h3/tests/uniform 
+# RUN python3 scripts/entropy_calculator.py src/bin/h3.ll src/h3/tests/uniform &&  python3 scripts/robustness_calculator.py src/bin/h3.ll src/h3/tests/uniform 
 
 
 

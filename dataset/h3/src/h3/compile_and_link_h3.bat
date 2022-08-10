@@ -21,6 +21,6 @@ clang -O0 -DH3_PREFIX="" -Ih3-master/src/apps/applib/include  -Ih3-master/src/h3
 clang -O0 -DH3_PREFIX="" -Ih3-master/src/apps/applib/include  -Ih3-master/src/h3lib/include -Wall -std=gnu99  -S -emit-llvm -o kml.ll -c h3-master/src/apps/applib/lib/kml.c
 clang -O0 -DH3_PREFIX="" -Ih3-master/src/apps/applib/include  -Ih3-master/src/h3lib/include -Wall -std=gnu99  -S -emit-llvm -o utility.ll -c h3-master/src/apps/applib/lib/utility.c
 clang -O0 -DH3_PREFIX="" -Ih3-master/src/apps/applib/include  -Ih3-master/src/h3lib/include -Wall -std=gnu99  -S -emit-llvm -o args.ll -c h3-master/src/apps/applib/lib/args.c
-llvm-link -S -o tmp.ll latLngToCell.ll kml.ll utility.ll args.ll lib/*.ll
+llvm-link -S -o ../bin/tmp.ll latLngToCell.ll kml.ll utility.ll args.ll lib/*.ll
 opt -O0 -indvars -loops -loop-simplify --loop-unroll -o ../bin/h3.ll ../bin/tmp.ll
 rm ../bin/tmp.ll
