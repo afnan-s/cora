@@ -1443,7 +1443,7 @@ main (int argc, char **argv)
   bool locale_ok;
 
   initialize_main (&argc, &argv);
-  set_program_name (argv[0]);
+  //set_program_name (argv[0]);
   locale_ok = !!setlocale (LC_ALL, "");
   bindtextdomain (PACKAGE, LOCALEDIR);
   textdomain (PACKAGE);
