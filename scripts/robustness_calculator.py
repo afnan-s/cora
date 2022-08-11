@@ -136,8 +136,12 @@ if __name__ == "__main__":
 	
 
 	csv_header = ["project_name", "disrupted_store", "total_runs", "fdp", "dp", "robustness", "experiment_setup"]
-	csv_rows = []
 
+
+	with open(os.path.join(results_path, "robustness.csv"), "a") as results:
+		csv_writer = csv.writer(results, quoting=csv.QUOTE_ALL)
+		csv_writer.writerow(csv_header)
+		results.close()
 	# Running tests on perturbed variants:
 	# Loop through generated variants:
 	print("[    ] Running tests ", end='')
@@ -219,21 +223,12 @@ if __name__ == "__main__":
 		if total_variant_runs != 0:
 			fdp_proportion = fdp/total_variant_runs
 		
-		csv_rows.append([project_name, disrupted_store, total_variant_runs, fdp, dp, fdp_proportion, experiment_setup+str(input_causing_execution)+"}"])
+		csv_row = [project_name, disrupted_store, total_variant_runs, fdp, dp, fdp_proportion, experiment_setup+str(input_causing_execution)+"}"]
+		
+		with open(os.path.join(results_path, "robustness.csv"), "a") as results:
+			csv_writer = csv.writer(results, quoting=csv.QUOTE_ALL)
+			csv_writer.writerow(csv_row)
+			results.close()
 
 	print("\r[Done] Running tests on all variants. Total number of runs that execute perturbation site is "+str(total_runs))
-
-	# Check if runs log already exists
-	first_time = True
-	if os.path.isfile(os.path.join(results_path, "robustness.csv")):
-		first_time = False
-
-	# Update runs log
-	with open(os.path.join(results_path, "robustness.csv"), "a") as results:
-		csv_writer = csv.writer(results, quoting=csv.QUOTE_ALL)
-		if(first_time):
-			csv_writer.writerow(csv_header)
-		csv_writer.writerows(csv_rows)
-		results.close()
-
 	print("\nFile: "+results_path+"/robustness.csv updated successfully.")
