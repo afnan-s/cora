@@ -508,6 +508,8 @@ bool LogState::runOnModule(Module &M) {
         //and it is of primitive type
         AllocaInst *AI = dyn_cast<AllocaInst>(Inst);
         auto &llvmContext = BB.getContext();
+        if(AI)
+          errs() << "Allocated Type: " << *(AI->getAllocatedType()) << "\n";
         if(AI && (isPrimitive(AI->getAllocatedType(), &llvmContext))){
           // Add this alloca instruction to the list:
           allocas.push_back(AI);

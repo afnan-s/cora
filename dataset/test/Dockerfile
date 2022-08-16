@@ -61,7 +61,8 @@ RUN ./generate_lls.sh
 
 
 WORKDIR /app/src/test/
-RUN clang -S -emit-llvm test.c -o ../bin/test.ll
+RUN clang -O0 -S -emit-llvm test.c -o tmp.ll
+RUN opt -O0 -indvars -loops -loop-simplify --loop-unroll -o ../bin/test.ll tmp.ll
 
 WORKDIR /app/
 

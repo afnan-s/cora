@@ -92,7 +92,7 @@ ggscatter(merged, x = "norm_CE", y = "robustness",
           cor.coef = TRUE, cor.method = "spearman",
           xlab = "Normalized Conditional Entropy", ylab = "Robustness")
 dev.off()
-pdf(file = "normCLvsRobustness_pearson.pdf")
+pdf(file = "normCEvsRobustness_pearson.pdf")
 ggscatter(merged, x = "norm_CE", y = "robustness", 
           add = "reg.line", conf.int = TRUE, 
           cor.coef = TRUE, cor.method = "pearson",

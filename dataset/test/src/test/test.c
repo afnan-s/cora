@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 // int igvariable = 4;
 // double dgbariable = 6.7;
 
@@ -97,16 +98,44 @@
 // }
 
 
-int test5(int x){
-    if(x%2 == 0)
-        return 0;
-    return 1;
-}
+// int test5(int x){
+//     if(x%2 == 0)
+//         return 0;
+//     return 1;
+// }
+
+struct address 
+{ 
+   char name[20]; 
+   char street[80]; 
+   char city[20]; 
+   char state[20]; 
+   int pin; 
+};
+
+union unex 
+{ 
+
+    int x, y;
+}; 
 
 
 int main(int argc, char *argv[]){
 
-    printf("%d", test5(atoi(argv[1])));
+    char greeting[6] = {'H', 'e', 'l', 'l', 'o', '\0'};
+    printf("Greeting message: %s\n", greeting );
+    int integers[] = {1, 2, 3};
+    int integers_2[13];
+    double doubles[] = {1.1, 2.2, 3.3, 4.4};
+    int doubles_2[22];
+    doubles[2] = 66;
+    struct address add1;
+    strcpy(add1.name, "Afnan");
+    add1.pin = 123;
+
+    union unex ex;
+    ex.x = 44;
+
 
 
 }

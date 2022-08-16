@@ -72,9 +72,9 @@ if __name__ == "__main__":
 	results_path = "results/"
 	# ll file of the random generator function (for linking)
 	if mode == "bit":
-		rand_function_path = 'llvm-passes/src/randomBitSeq.ll'
-	elif mode == "seq":
 		rand_function_path = 'llvm-passes/src/randomBitFlip.ll'
+	elif mode == "seq":
+		rand_function_path = 'llvm-passes/src/randomBitSeq.ll'
 
 
 	#Generating the instrumented version of the SUT
