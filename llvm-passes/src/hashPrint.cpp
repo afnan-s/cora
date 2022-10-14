@@ -6,7 +6,7 @@
 
 using namespace std;
 
-#define STATE_BUFFER_SIZE 5000
+#define STATE_BUFFER_SIZE 10000
 #define OUT_FILE "output.txt"
 
 char PerStateBuffer[STATE_BUFFER_SIZE] = {0};
@@ -43,10 +43,18 @@ int get_function_execution_count(string function_name){
 
 }
 
+void wipe_buffer(){
+	// Wipe the buffer (to be ready for next print)
+	for(int i=0; i < STATE_BUFFER_SIZE; i++){		
+		PerStateBuffer[i] = 0;
+	} // end for
+}
+
 extern "C" void increment_function_execution_counter(char * function_name){
 
 	int func_exec_count = get_function_execution_count(function_name);
 	function_execution_counts[function_name] = ++func_exec_count;
+	printf("Finished calling increment_function_execution_counter();\n");
 
 }
 
@@ -58,8 +66,10 @@ extern "C" void printHash(int line, char * function_name){
 	// Therefore, no need to print its state (unduly inflates entropy)
 	// The reason we only consider the _first_ iteration of a loop, is because 
 	// we would have only perturbed the first iteration. 
-	if(!first_time) return;
-
+	if(!first_time) {
+		wipe_buffer();
+		return;
+	}
 	// TODO: these three lines are old code. Delete later.
 	// int line_exec_count = get_store_execution_count(line);
 	// store_execution_counts[line] = ++line_exec_count;
@@ -79,12 +89,8 @@ extern "C" void printHash(int line, char * function_name){
 	outFile.write(PerStateBuffer, STATE_BUFFER_SIZE);
 	// outFile << PerStateBuffer;
 	
-	// output all array elements in a loop (otherwise only output till end of string)
-	for(int i=0; i < STATE_BUFFER_SIZE; i++){
-		// outFile << string(1, PerStateBuffer[i]);
-		// Wipe the buffer (to be ready for next print)
-		PerStateBuffer[i] = 0;
-	} // end for
+	// Wipe the buffer (to be ready for next print)
+	wipe_buffer();
 	
 
 	outFile << endl;
